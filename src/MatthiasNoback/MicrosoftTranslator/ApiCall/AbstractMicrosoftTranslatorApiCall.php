@@ -20,7 +20,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
         return $url;
     }
 
-    protected function toSimpleXML($xmlString)
+    protected static function toSimpleXML($xmlString)
     {
         $useInternalErrors = libxml_use_internal_errors(true);
 
@@ -29,5 +29,32 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
         libxml_use_internal_errors($useInternalErrors);
 
         return $simpleXml;
+    }
+
+    protected static function calculateTotalLengthOfTexts(array $texts)
+    {
+        $totalLength = 0;
+
+        array_walk($texts, function($text) use (&$totalLength) {
+            $totalLength += strlen($text);
+        });
+
+        return $totalLength;
+    }
+
+    protected static function getArrayOfStringsFromXml($xmlString)
+    {
+        $simpleXml = self::toSimpleXML($xmlString);
+
+        if (!isset($simpleXml->{"string"})) {
+            throw new \InvalidArgumentException('Expected root element of the response to contain one or more "string" elements');
+        }
+
+        $strings = array();
+        foreach ($simpleXml->{"string"} as $string) {
+            $strings[] = (string) $string;
+        }
+
+        return $strings;
     }
 }

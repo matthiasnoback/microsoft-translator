@@ -19,6 +19,7 @@
     <php>
         <env name="MICROSOFT_OAUTH_CLIENT_ID" value="xxx"></env>
         <env name="MICROSOFT_OAUTH_CLIENT_SECRET" value="yyy"></env>
+        <env name="MICROSOFT_TRANSLATOR_SAVE_AUDIO_TO" value="./" />
     </php>
     -->
 </phpunit>

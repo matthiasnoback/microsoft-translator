@@ -28,16 +28,65 @@ class MicrosoftTranslator
         $this->accessTokenProvider = $accessTokenProvider;
     }
 
-    public function translate($text, $to, $from = '', $category = 'general')
+    public function translate($text, $to, $from = null, $category = null)
     {
         $apiCall = new ApiCall\Translate($text, $to, $from, $category);
 
         return $this->call($apiCall);
     }
 
-    public function translateArray(array $texts, $to, $from = '')
+    public function translateArray(array $texts, $to, $from = null)
     {
         $apiCall = new ApiCall\TranslateArray($texts, $to, $from);
+
+        return $this->call($apiCall);
+    }
+
+    public function detect($text)
+    {
+        $apiCall = new ApiCall\Detect($text);
+
+        return $this->call($apiCall);
+    }
+
+    public function detectArray(array $texts)
+    {
+        $apiCall = new ApiCall\DetectArray($texts);
+
+        return $this->call($apiCall);
+    }
+
+    public function breakSentences($text, $language)
+    {
+        $apiCall = new ApiCall\BreakSentences($text, $language);
+
+        return $this->call($apiCall);
+    }
+
+    public function speak($text, $language, $format = null, $options = null)
+    {
+        $apiCall = new ApiCall\Speak($text, $language, $format, $options);
+
+        return $this->call($apiCall);
+    }
+
+    public function getLanguagesForSpeak()
+    {
+        $apiCall = new ApiCall\GetLanguagesForSpeak();
+
+        return $this->call($apiCall);
+    }
+
+    public function getLanguagesForTranslate()
+    {
+        $apiCall = new ApiCall\GetLanguagesForTranslate();
+
+        return $this->call($apiCall);
+    }
+
+    public function getLanguageNames(array $languageCodes, $locale)
+    {
+        $apiCall = new ApiCall\GetLanguageNames($languageCodes, $locale);
 
         return $this->call($apiCall);
     }

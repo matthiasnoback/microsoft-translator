@@ -10,7 +10,7 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
     private $to;
     private $from;
 
-    public function __construct(array $texts, $to, $from = '')
+    public function __construct(array $texts, $to, $from = null)
     {
         if (count($texts) > self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS) {
             throw new \InvalidArgumentException(sprintf(
@@ -30,17 +30,6 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
         $this->texts = $texts;
         $this->to = $to;
         $this->from = $from;
-    }
-
-    private static function calculateTotalLengthOfTexts(array $texts)
-    {
-        $totalLength = 0;
-
-        array_walk($texts, function($text) use (&$totalLength) {
-            $totalLength += strlen($text);
-        });
-
-        return $totalLength;
     }
 
     public function getApiMethodName()
@@ -87,12 +76,21 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
         $simpleXml = $this->toSimpleXML($response);
 
         $translations = array();
-        foreach ($simpleXml->TranslateArrayResponse as $translateArrayResponse) {
-            if (isset($translateArrayResponse->Error)) {
+
+        if (!isset($simpleXml->TranslateArrayResponse)) {
+            throw new \UnexpectedValueException('Expected root element of the response to contain one or more "TranslateArrayResponse" elements');
+        }
+
+        foreach ($simpleXml->{"TranslateArrayResponse"} as $translateArrayResponse) {
+            if (isset($translateArrayResponse->Error) && $translateArrayResponse->Error) {
                 $translation = '';
                 // TODO maybe find a better way to handle translation errors
             }
             else {
+                if (!isset($translateArrayResponse->TranslatedText)) {
+                    throw new \UnexpectedValueException('Expected root element of the response to contain a "TranslatedText" element');
+                }
+
                 $translation = (string) $translateArrayResponse->TranslatedText;
             }
 
