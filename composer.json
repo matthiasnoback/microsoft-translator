@@ -1,0 +1,23 @@
+{
+    "name": "matthiasnoback/microsoft-translator",
+    "type": "library",
+    "description": "Library for making calls to the Microsoft Translator V2 API",
+    "keywords": ["translate","Microsoft Translator", "Bing"],
+    "homepage": "http://github.com/matthiasnoback/microsoft-translator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthias Noback",
+            "email": "matthiasnoback@gmail.com",
+            "homepage": "http://php-and-symfony.matthiasnoback.nl"
+        }
+    ],
+    "require": {
+        "doctrine/common": "dev-master",
+        "kriswallsmith/buzz": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0" : { "MatthiasNoback" : "src/" }
+    }
+}

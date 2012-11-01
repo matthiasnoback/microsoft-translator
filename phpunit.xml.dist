@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="microsoft-translator test suite">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./tests</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <!--
+    <php>
+        <env name="MICROSOFT_OAUTH_CLIENT_ID" value="xxx"></env>
+        <env name="MICROSOFT_OAUTH_CLIENT_SECRET" value="yyy"></env>
+    </php>
+    -->
+</phpunit>
