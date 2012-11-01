@@ -123,6 +123,11 @@ class AccessTokenProviderTest extends \PHPUnit_Framework_TestCase
             ->method('getContent')
             ->will($this->returnValue($content));
 
+        $response
+            ->expects($this->any())
+            ->method('isSuccessful')
+            ->will($this->returnValue(true));
+
         return $response;
     }
 

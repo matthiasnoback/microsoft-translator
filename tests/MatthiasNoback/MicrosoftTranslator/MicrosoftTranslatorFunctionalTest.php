@@ -107,7 +107,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLanguagesForTranslate()
     {
-        $languageCodes = $this->translator->getLanguagesForSpeak();
+        $languageCodes = $this->translator->getLanguagesForTranslate();
         $this->assertInternalType('array', $languageCodes);
         $this->assertTrue(count($languageCodes) > 30);
 
