@@ -104,6 +104,8 @@ class MicrosoftTranslator
         );
         $content = $apiCall->getRequestContent();
 
+        var_dump($content);
+
         $response = $this->browser->call($url, $method, $headers, $content);
 
         if (!$response->isSuccessful()) {
@@ -117,6 +119,8 @@ class MicrosoftTranslator
         /* @var $response \Buzz\Message\Response */
 
         $responseContent = $response->getContent();
+
+        var_dump($responseContent); exit;
 
         return $apiCall->parseResponse($responseContent);
     }

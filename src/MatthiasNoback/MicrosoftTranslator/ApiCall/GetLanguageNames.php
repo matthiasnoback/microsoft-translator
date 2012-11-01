@@ -13,7 +13,7 @@ class GetLanguageNames extends AbstractMicrosoftTranslatorApiCall
         $this->locale = $locale;
     }
 
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'GetLanguageNames';
     }

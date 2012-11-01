@@ -19,7 +19,7 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
         $this->texts = $texts;
     }
 
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'DetectArray';
     }

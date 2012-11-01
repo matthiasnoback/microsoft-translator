@@ -15,9 +15,6 @@ abstract class AbstractGetLanguages extends AbstractMicrosoftTranslatorApiCall
 
     public function getQueryParameters()
     {
-        return array(
-            'appId' => '',
-        );
     }
 
     public function parseResponse($response)

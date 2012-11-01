@@ -33,7 +33,7 @@ class Speak extends AbstractMicrosoftTranslatorApiCall
         $this->options = $options;
     }
 
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'Speak';
     }
@@ -50,7 +50,6 @@ class Speak extends AbstractMicrosoftTranslatorApiCall
     public function getQueryParameters()
     {
         return array(
-            'appId'    => '',
             'text'     => $this->text,
             'language' => $this->language,
             'format'   => $this->format,

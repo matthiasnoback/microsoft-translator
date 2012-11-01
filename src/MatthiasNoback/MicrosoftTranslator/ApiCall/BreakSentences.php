@@ -17,7 +17,7 @@ class BreakSentences extends AbstractMicrosoftTranslatorApiCall
         $this->language = $language;
     }
 
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'BreakSentences';
     }

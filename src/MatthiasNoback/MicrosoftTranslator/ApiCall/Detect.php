@@ -15,7 +15,7 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
         $this->text = $text;
     }
 
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'Detect';
     }
@@ -32,7 +32,6 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
     public function getQueryParameters()
     {
         return array(
-            'appId' => '',
             'text' => $this->text,
         );
     }

@@ -4,7 +4,7 @@ namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 class GetLanguagesForTranslate extends AbstractGetLanguages
 {
-    protected function getApiMethodName()
+    public function getApiMethodName()
     {
         return 'GetLanguagesForTranslate';
     }

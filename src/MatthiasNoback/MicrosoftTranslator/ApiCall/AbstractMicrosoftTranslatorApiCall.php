@@ -8,7 +8,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
 
     const MAXIMUM_LENGTH_OF_TEXT = 10000;
 
-    abstract protected function getApiMethodName();
+    abstract public function getApiMethodName();
 
     public function getUrl()
     {
