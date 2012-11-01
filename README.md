@@ -86,6 +86,8 @@ Take a look at the tests to find out what else you can do with the API.
 To fully enable the test suite, you need to copy ``phpunit.xml.dist`` to ``phpunit.xml`` and replace the placeholder
 values with their real values (i.e. client id, client secret and a location for storing spoken text files).
 
+[![Build Status](https://secure.travis-ci.org/matthiasnoback/microsoft-translator.png)](http://travis-ci.org/matthiasnoback/microsoft-translator)
+
 ## TODO
 
 There are some more calls to be implemented, and also some more tests to be added. I am also working on a bundle for Symfony2,
