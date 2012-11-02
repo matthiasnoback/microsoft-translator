@@ -13,8 +13,8 @@
         }
     ],
     "require": {
-        "doctrine/common": "dev-master",
-        "kriswallsmith/buzz": "dev-master"
+        "doctrine/common": ">=2.2,<2.4-dev",
+        "kriswallsmith/buzz": "0.*"
     },
     "minimum-stability": "dev",
     "autoload": {
