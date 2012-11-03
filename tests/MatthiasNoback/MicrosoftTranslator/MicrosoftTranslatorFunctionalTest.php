@@ -7,6 +7,7 @@ use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
 use Doctrine\Common\Cache\ArrayCache;
+use MatthiasNoback\Buzz\Client\CachedClient;
 
 class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,19 +16,24 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     private $translator;
 
+    /**
+     * @var Browser
+     */
+    private $browser;
+
     protected function setUp()
     {
-        $browser = new Browser();
+        $this->browser = new Browser();
 
         $clientId = $this->getEnvironmentVariable('MICROSOFT_OAUTH_CLIENT_ID');
         $clientSecret = $this->getEnvironmentVariable('MICROSOFT_OAUTH_CLIENT_SECRET');
 
         $cache = new ArrayCache();
         $accessTokenCache = new AccessTokenCache($cache);
-        $accessTokenProvider = new AccessTokenProvider($browser, $clientId, $clientSecret);
+        $accessTokenProvider = new AccessTokenProvider($this->browser, $clientId, $clientSecret);
         $accessTokenProvider->setCache($accessTokenCache);
 
-        $this->translator = new MicrosoftTranslator($browser, $accessTokenProvider);
+        $this->translator = new MicrosoftTranslator($this->browser, $accessTokenProvider);
     }
 
     public function testTranslate()
@@ -123,6 +129,25 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         foreach ($languageCodes as $languageCode) {
             $this->assertArrayHasKey($languageCode, $languageNames);
         }
+    }
+
+    public function testCachedBrowserClient()
+    {
+        $currentClient = $this->browser->getClient();
+
+        $arrayCache = new ArrayCache();
+        $cachedClient = new CachedClient($arrayCache, $currentClient);
+
+        $this->browser->setClient($cachedClient);
+
+        for ($i = 1; $i <= 3; $i++) {
+            $this->translator->translate('This is a test', 'nl');
+        }
+
+        $this->assertLessThanOrEqual(2, $cachedClient->getMisses()); // at most one for the access token, one for the translation
+        $this->assertSame(2, $cachedClient->getHits());
+
+        $this->browser->setClient($currentClient);
     }
 
     private function getEnvironmentVariable($name)
