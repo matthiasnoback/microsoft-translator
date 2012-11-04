@@ -7,16 +7,33 @@ use Doctrine\Common\Cache\Cache;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
 
+/**
+ * The CachedClient wraps an existing ClientInterface. It intercepts
+ * requests and checks if the cache already constains a response for the
+ * current request.
+ *
+ * When querying the cache, an invariant version of the request is used:
+ * - Headers are sorted alphabetically
+ * - Some headers that don't contribute to the variance of a request are ignored.
+ */
 class CachedClient implements ClientInterface
 {
     private $cache;
+    private $client;
+    private $ignoreHeaders;
     private $hits = 0;
     private $misses = 0;
 
-    public function __construct(Cache $cache, ClientInterface $client)
+    /**
+     * @param \Doctrine\Common\Cache\Cache $cache         Cache for storing responses
+     * @param \Buzz\Client\ClientInterface $client        Client to use for making HTTP requests
+     * @param array                        $ignoreHeaders Headers to be ignored when determing request variance
+     */
+    public function __construct(Cache $cache, ClientInterface $client, array $ignoreHeaders = array())
     {
         $this->cache = $cache;
         $this->client = $client;
+        $this->ignoreHeaders = $ignoreHeaders;
     }
 
     /**
@@ -48,18 +65,69 @@ class CachedClient implements ClientInterface
         $this->cache->save($cacheKey, serialize($response));
     }
 
+    /**
+     * Get the number of times the cache already contained a response, and thus,
+     * no real HTTP request made
+     *
+     * @return int
+     */
     public function getHits()
     {
         return $this->hits;
     }
 
+    /**
+     * Get the number of times the cache did not contain a response and an HTTP
+     * request was made to fetch the response
+     *
+     * @return int
+     */
     public function getMisses()
     {
         return $this->misses;
     }
 
+    /**
+     * Generate a unique key for the given request
+     *
+     * The request is made invariant by sorting the headers alphabetically and by
+     * removing headers that are to be ignored.
+     *
+     * @see CachedClient::__construct()
+     *
+     * @param \Buzz\Message\RequestInterface $request
+     * @return string
+     */
     private function generateCacheKeyForRequest(RequestInterface $request)
     {
-        return md5($request->__toString());
+        $normalizedRequest = $this->getNormalizedRequest($request);
+
+        return md5($normalizedRequest->__toString());
+    }
+
+    private function getNormalizedRequest(RequestInterface $request)
+    {
+        $normalizedRequest = clone $request;
+
+        $headers = $request->getHeaders();
+        $normalizedHeaders = $this->normalizeHeaders($headers);
+        asort($normalizedHeaders);
+
+        $normalizedRequest->setHeaders($normalizedHeaders);
+
+        return $normalizedRequest;
+    }
+
+    private function normalizeHeaders(array $headers)
+    {
+        $ignoreHeaders = $this->ignoreHeaders;
+
+        foreach ($ignoreHeaders as $ignoreHeader) {
+            $headers = array_filter($headers, function($header) use ($ignoreHeader) {
+                return stripos($header, $ignoreHeader) !== 0;
+            });
+        }
+
+        return $headers;
     }
 }
