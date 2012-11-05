@@ -136,7 +136,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $currentClient = $this->browser->getClient();
 
         $arrayCache = new ArrayCache();
-        $cachedClient = new CachedClient($arrayCache, $currentClient);
+        $cachedClient = new CachedClient($currentClient, $arrayCache);
 
         $this->browser->setClient($cachedClient);
 

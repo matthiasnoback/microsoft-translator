@@ -39,7 +39,7 @@ class CachedClientTest extends \PHPUnit_Framework_TestCase
                 $cacheKey2 = $id;
             }));
 
-        $cachedClient = new CachedClient($cache, $client);
+        $cachedClient = new CachedClient($client, $cache);
 
         $cachedClient->send($request, $response);
 
@@ -96,7 +96,7 @@ class CachedClientTest extends \PHPUnit_Framework_TestCase
             ->method('setContent')
             ->with($cachedContent);
 
-        $cachedClient = new CachedClient($cache, $client);
+        $cachedClient = new CachedClient($client, $cache);
 
         $cachedClient->send($request, $response);
 

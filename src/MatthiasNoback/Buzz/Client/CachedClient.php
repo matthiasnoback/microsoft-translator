@@ -18,8 +18,9 @@ use Buzz\Message\MessageInterface;
  */
 class CachedClient implements ClientInterface
 {
-    private $cache;
     private $client;
+    private $cache;
+    private $lifetime;
     private $ignoreHeaders;
     private $hits = 0;
     private $misses = 0;
@@ -29,11 +30,17 @@ class CachedClient implements ClientInterface
      * @param \Buzz\Client\ClientInterface $client        Client to use for making HTTP requests
      * @param array                        $ignoreHeaders Headers to be ignored when determing request variance
      */
-    public function __construct(Cache $cache, ClientInterface $client, array $ignoreHeaders = array())
+    public function __construct(ClientInterface $client, Cache $cache, $lifetime = 0, array $ignoreHeaders = array())
     {
-        $this->cache = $cache;
         $this->client = $client;
+        $this->cache = $cache;
+        $this->lifetime = $lifetime;
         $this->ignoreHeaders = $ignoreHeaders;
+    }
+
+    public function ignoreHeader($header)
+    {
+        $this->ignoreHeaders[] = $header;
     }
 
     /**
@@ -62,7 +69,7 @@ class CachedClient implements ClientInterface
 
         $this->client->send($request, $response);
 
-        $this->cache->save($cacheKey, serialize($response));
+        $this->cache->save($cacheKey, serialize($response), $this->lifetime);
     }
 
     /**
@@ -105,6 +112,14 @@ class CachedClient implements ClientInterface
         return md5($normalizedRequest->__toString());
     }
 
+    /**
+     * Reduces the request to its normal form
+     * Which means: strip all information that does not contribute to its uniqueness
+     * This will prevent cache misses, when effectively indifferent requests are made
+     *
+     * @param \Buzz\Message\RequestInterface $request
+     * @return \Buzz\Message\RequestInterface
+     */
     private function getNormalizedRequest(RequestInterface $request)
     {
         $normalizedRequest = clone $request;
@@ -118,13 +133,19 @@ class CachedClient implements ClientInterface
         return $normalizedRequest;
     }
 
+    /**
+     * Get only those headers that should not be ignored
+     *
+     * @param array $headers
+     * @return array
+     */
     private function normalizeHeaders(array $headers)
     {
         $ignoreHeaders = $this->ignoreHeaders;
 
         foreach ($ignoreHeaders as $ignoreHeader) {
             $headers = array_filter($headers, function($header) use ($ignoreHeader) {
-                return stripos($header, $ignoreHeader) !== 0;
+                return stripos($header, $ignoreHeader.':') !== 0;
             });
         }
 
