@@ -2,6 +2,8 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
+use MatthiasNoback\Exception\InvalidResponseException;
+
 class TranslateArray extends AbstractMicrosoftTranslatorApiCall
 {
     const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 2000;
@@ -77,8 +79,8 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
 
         $translations = array();
 
-        if (!isset($simpleXml->TranslateArrayResponse)) {
-            throw new \UnexpectedValueException('Expected root element of the response to contain one or more "TranslateArrayResponse" elements');
+        if (!isset($simpleXml->{"TranslateArrayResponse"})) {
+            throw new InvalidResponseException('Expected root element of the response to contain one or more "TranslateArrayResponse" elements');
         }
 
         foreach ($simpleXml->{"TranslateArrayResponse"} as $translateArrayResponse) {
@@ -88,7 +90,7 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
             }
             else {
                 if (!isset($translateArrayResponse->TranslatedText)) {
-                    throw new \UnexpectedValueException('Expected root element of the response to contain a "TranslatedText" element');
+                    throw new InvalidResponseException('Expected root element of the response to contain a "TranslatedText" element');
                 }
 
                 $translation = (string) $translateArrayResponse->TranslatedText;

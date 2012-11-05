@@ -4,7 +4,7 @@ namespace MatthiasNoback\MicrosoftTranslator;
 
 use MatthiasNoback\MicrosoftOAuth\AccessTokenProviderInterface;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
-
+use MatthiasNoback\Exception\RequestFailedException;
 use Buzz\Browser;
 
 class MicrosoftTranslator
@@ -176,10 +176,15 @@ class MicrosoftTranslator
         );
         $content = $apiCall->getRequestContent();
 
-        $response = $this->browser->call($url, $method, $headers, $content);
+        try {
+            $response = $this->browser->call($url, $method, $headers, $content);
+        }
+        catch (\Exception $previous) {
+            throw new RequestFailedException('Request failed', null, $previous);
+        }
 
         if (!$response->isSuccessful()) {
-            throw new \RuntimeException(sprintf(
+            throw new RequestFailedException(sprintf(
                 'API call was not successful, %d: %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase()

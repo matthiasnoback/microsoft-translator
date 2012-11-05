@@ -2,6 +2,8 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
+use MatthiasNoback\Exception\InvalidResponseException;
+
 abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
 {
     const HTTP_API_URL = 'http://api.microsofttranslator.com/V2/Http.svc/';
@@ -47,7 +49,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
         $simpleXml = self::toSimpleXML($xmlString);
 
         if (!isset($simpleXml->{"string"})) {
-            throw new \InvalidArgumentException('Expected root element of the response to contain one or more "string" elements');
+            throw new InvalidResponseException('Expected root element of response to contain one or more "string" elements');
         }
 
         $strings = array();

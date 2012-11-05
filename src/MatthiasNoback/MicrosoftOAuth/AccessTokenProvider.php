@@ -3,6 +3,8 @@
 namespace MatthiasNoback\MicrosoftOAuth;
 
 use Buzz\Browser;
+use MatthiasNoback\Exception\RequestFailedException;
+use MatthiasNoback\Exception\InvalidResponseException;
 
 class AccessTokenProvider implements AccessTokenProviderInterface
 {
@@ -73,14 +75,19 @@ class AccessTokenProvider implements AccessTokenProviderInterface
             'grant_type'    => $grantType,
         );
 
-        $response = $this->browser->post(
-            self::OAUTH_URL,
-            array(),
-            http_build_query($requestParameters)
-        );
+        try {
+            $response = $this->browser->post(
+                self::OAUTH_URL,
+                array(),
+                http_build_query($requestParameters)
+            );
+        }
+        catch (\Exception $previous) {
+            throw new RequestFailedException('Request failed', null, $previous);
+        }
 
         if (!$response->isSuccessful()) {
-            throw new \RuntimeException(sprintf(
+            throw new RequestFailedException(sprintf(
                 'Call to OAuth server failed, %d: %s',
                 $response->getStatusCode(),
                 $response->getReasonPhrase()
@@ -92,11 +99,11 @@ class AccessTokenProvider implements AccessTokenProviderInterface
         $result = json_decode($response->getContent(), true);
 
         if (isset($result['error']) && $result['error'] !== '') {
-            throw new \RuntimeException(sprintf('Response contains an error: %s', $result['error']));
+            throw new RequestFailedException(sprintf('Response contains an error: %s', $result['error']));
         }
 
         if (!isset($result['access_token'])) {
-            throw new \RuntimeException('Response contains no access token');
+            throw new InvalidResponseException('Response contains no access token');
         }
 
         return $result['access_token'];
