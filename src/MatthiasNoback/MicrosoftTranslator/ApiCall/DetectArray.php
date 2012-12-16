@@ -37,7 +37,8 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
         $document->appendChild($rootElement);
 
         foreach ($this->texts as $text) {
-            $stringElement = $document->createElement('string', $text);
+            $stringElement = $document->createElement('string');
+            $stringElement->appendChild($document->createTextNode($text));
             $rootElement->appendChild($stringElement);
         }
 

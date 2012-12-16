@@ -48,11 +48,13 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $translatedTexts = $this->translator->translateArray(array(
             'This is a test',
             'My name is Matthias',
+            'You are naïve!',
         ), 'nl', 'en');
 
         $this->assertSame(array(
             'Dit is een test',
-            'Mijn naam is Matthias'
+            'Mijn naam is Matthias',
+            'U bent naïef!',
         ), $translatedTexts);
     }
 

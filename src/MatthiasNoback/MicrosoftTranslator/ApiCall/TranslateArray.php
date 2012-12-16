@@ -52,18 +52,21 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
         $appIdElement = $document->createElement('AppId');
         $rootElement->appendChild($appIdElement);
 
-        $fromElement = $document->createElement('From', $this->from);
+        $fromElement = $document->createElement('From');
+        $fromElement->appendChild($document->createTextNode($this->from));
         $rootElement->appendChild($fromElement);
 
         $textsElement = $document->createElement('Texts');
         $rootElement->appendChild($textsElement);
 
         foreach ($this->texts as $text) {
-            $stringElement = $document->createElementNS('http://schemas.microsoft.com/2003/10/Serialization/Arrays', 'string', $text);
+            $stringElement = $document->createElementNS('http://schemas.microsoft.com/2003/10/Serialization/Arrays', 'string');
+            $stringElement->appendChild($document->createTextNode($text));
             $textsElement->appendChild($stringElement);
         }
 
-        $toElement = $document->createElement('To', $this->to);
+        $toElement = $document->createElement('To');
+        $toElement->appendChild($document->createTextNode($this->to));
         $rootElement->appendChild($toElement);
 
         return $document->saveXML();

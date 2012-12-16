@@ -31,7 +31,8 @@ class GetLanguageNames extends AbstractMicrosoftTranslatorApiCall
         $document->appendChild($rootElement);
 
         foreach ($this->languageCodes as $languageCode) {
-            $stringElement = $document->createElement('string', $languageCode);
+            $stringElement = $document->createElement('string');
+            $stringElement->appendChild($document->createTextNode($languageCode));
             $rootElement->appendChild($stringElement);
         }
 
