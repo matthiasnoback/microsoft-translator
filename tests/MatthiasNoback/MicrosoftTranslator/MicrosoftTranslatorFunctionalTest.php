@@ -3,6 +3,7 @@
 namespace MatthiasNoback\Tests\MicrosoftTranslator;
 
 use Buzz\Browser;
+use Buzz\Client\Curl;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
@@ -23,7 +24,8 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->browser = new Browser();
+        $client = new Curl();
+        $this->browser = new Browser($client);
 
         $clientId = $this->getEnvironmentVariable('MICROSOFT_OAUTH_CLIENT_ID');
         $clientSecret = $this->getEnvironmentVariable('MICROSOFT_OAUTH_CLIENT_SECRET');
