@@ -88,7 +88,12 @@ values with their real values (i.e. client id, client secret and a location for 
 
 [![Build Status](https://secure.travis-ci.org/matthiasnoback/microsoft-translator.png)](http://travis-ci.org/matthiasnoback/microsoft-translator)
 
+## Related projects
+
+There is a [MicrosoftTranslatorBundle](https://github.com/matthiasnoback/MicrosoftTranslatorBundle) which makes the Microsoft translator available in a Symfony2 project.
+
+There is also a [MicrosoftTranslatorServiceProvider](https://github.com/matthiasnoback/MicrosoftTranslatorServiceProvider) which registers the Microsoft translator and related services to a Silex application.
+
 ## TODO
 
-There are some more calls to be implemented, and also some more tests to be added. I am also working on a bundle for Symfony2,
-which will make the translator available as a service and will take care of setting up the cache and the browser.
+There are some more calls to be implemented, and also some more tests to be added.
