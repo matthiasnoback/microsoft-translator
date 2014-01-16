@@ -2,6 +2,8 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
+use MatthiasNoback\Exception\InvalidResponseException;
+
 class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 {
     private $text;
@@ -35,16 +37,10 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 
     public function getRequestContent()
     {
-        /*
-        <TranslateOptions xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2">
-          <Category>string-value</Category>
-          <ContentType>text/plain</ContentType>
-          <ReservedFlags></ReservedFlags>
-          <State>int-value</State>
-          <Uri>string-value</Uri>
-          <User>string-value</User>
-        </TranslateOptions>
-        */
+        return '<TranslateOptions xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2">' .
+          '<Category>' . $this->category . '</Category>' .
+          '<ContentType>text/plain</ContentType>' .
+        '</TranslateOptions>';
     }
 
     public function getQueryParameters()
@@ -67,22 +63,22 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 
         $translations = array();
 
-        if (!isset($simpleXml->{"GetTranslationsResponse"})) {
-            throw new InvalidResponseException('Expected root element of the response to contain one or more "GetTranslationsResponse" elements');
+        if ($simpleXml->getName() !== 'GetTranslationsResponse') {
+            throw new InvalidResponseException('Expected root element to be a "GetTranslationsResponse" element');
+        }
+        if (!isset($simpleXml->{"Translations"})) {
+            throw new InvalidResponseException('Expected root element of the response to contain a "Translations" element');
         }
 
-        foreach ($simpleXml->{"GetTranslationsResponse"} as $getTranslationsResponse) {
+        foreach ($simpleXml->{"Translations"} as $getTranslationsResponse) {
             if (isset($getTranslationsResponse->Error) && $getTranslationsResponse->Error) {
                 // TODO maybe find a better way to handle translation errors
             }
             else {
-                if (!isset($getTranslationsResponse->Translations)) {
-                    throw new InvalidResponseException('Expected root element of the response to contain a "Translations" element');
-                }
-                else if (!isset($getTranslationsResponse->Translations->TranslationMatch)) {
+                if (!isset($getTranslationsResponse->TranslationMatch)) {
                     throw new InvalidResponseException('Expected "Translations" element of the response to contain a "TranslationMatch" element');
                 }
-                $matches = $getTranslationsResponse->Translations->TranslationMatch;
+                $matches = $getTranslationsResponse->TranslationMatch;
 
                 foreach ($matches as $translationMatch) {
                     // MatchDegree and Rating might be interesting...
