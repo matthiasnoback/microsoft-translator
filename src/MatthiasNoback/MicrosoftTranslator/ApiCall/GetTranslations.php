@@ -49,11 +49,7 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
             'text'        => $this->text,
             'from'        => $this->from,
             'to'          => $this->to,
-            'maxTranslations' => $this->maxTranslations,
-            'options' => array(
-              'Category'    => $this->category,
-              'ContentType' => 'text/plain'
-            )
+            'maxTranslations' => $this->maxTranslations
         );
     }
 

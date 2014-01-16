@@ -15,13 +15,12 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
         new ApiCall\GetTranslations($text, 'nl');
     }
 
-    public function testGetRequestToTranslateMethodWithNoRequestContent()
+    public function testPostRequestToGetTranslations()
     {
         $apiCall = new ApiCall\GetTranslations('text', 'nl');
 
         $this->assertSame('GetTranslations', $apiCall->getApiMethodName());
         $this->assertSame('POST', $apiCall->getHttpMethod());
-        $this->assertSame(null, $apiCall->getRequestContent());
     }
 
     public function testQueryParameters()
@@ -30,18 +29,13 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
         $from = 'from';
         $to = 'to';
         $maxTranslations = 4;
-        $category = 'category';
 
-        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations, $category);
+        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations);
         $this->assertEquals(array(
             'text'        => $text,
             'from'        => $from,
             'to'          => $to,
-            'maxTranslations' => $maxTranslations,
-            'options'     => array(
-              'Category'    => $category,
-              'ContentType' => 'text/plain',
-            )
+            'maxTranslations' => $maxTranslations
         ), $apiCall->getQueryParameters());
     }
 
@@ -49,8 +43,24 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
     {
         $apiCall = new ApiCall\GetTranslations('text', 'nl');
 
-        $response = '<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/">Dit is een test</string>';
+        $response =
+        <<<EOF
+                <GetTranslationsResponse xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <From>en</From>
+  <State/>
+  <Translations>
+    <TranslationMatch>
+      <Count>0</Count>
+      <MatchDegree>100</MatchDegree>
+      <MatchedOriginalText/>
+      <Rating>5</Rating>
+      <TranslatedText>Dit is een test</TranslatedText>
+    </TranslationMatch>
+  </Translations>
+</GetTranslationsResponse>
+EOF;
 
-        $this->assertSame('Dit is een test', $apiCall->parseResponse($response));
+
+    $this->assertSame(array('Dit is een test'), $apiCall->parseResponse($response));
     }
 }
