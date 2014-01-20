@@ -44,8 +44,8 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
         $apiCall = new ApiCall\GetTranslations('text', 'nl');
 
         $response =
-        <<<EOF
-                <GetTranslationsResponse xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+<<<EOF
+<GetTranslationsResponse xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <From>en</From>
   <State/>
   <Translations>
@@ -60,7 +60,6 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
 </GetTranslationsResponse>
 EOF;
 
-
-    $this->assertSame(array('Dit is een test'), $apiCall->parseResponse($response));
+        $this->assertSame(array('Dit is een test'), $apiCall->parseResponse($response));
     }
 }

@@ -37,10 +37,19 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 
     public function getRequestContent()
     {
-        return '<TranslateOptions xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2">' .
-          '<Category>' . $this->category . '</Category>' .
-          '<ContentType>text/plain</ContentType>' .
-        '</TranslateOptions>';
+        $document = new \DOMDocument();
+        $rootElement = $document->createElementNS('http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2', 'TranslateOptions');
+        $document->appendChild($rootElement);
+
+        $categoryElement = $document->createElement('Category');
+        $categoryElement->appendChild($document->createTextNode($this->category));
+        $rootElement->appendChild($categoryElement);
+
+        $typeElement = $document->createElement('ContentType');
+        $typeElement->appendChild($document->createTextNode('text/plain'));
+        $rootElement->appendChild($typeElement);
+
+        return $document->saveXML();
     }
 
     public function getQueryParameters()
