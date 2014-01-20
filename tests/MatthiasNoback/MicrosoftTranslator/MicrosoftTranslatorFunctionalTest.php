@@ -60,6 +60,13 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         ), $translatedTexts);
     }
 
+    public function testGetTranslations()
+    {
+        $translated = $this->translator->getTranslations('This is a test', 'nl', 'en', 1);
+
+        $this->assertSame(array('Dit is een test'), $translated);
+    }
+
     public function testDetect()
     {
         $text = 'This is a test';

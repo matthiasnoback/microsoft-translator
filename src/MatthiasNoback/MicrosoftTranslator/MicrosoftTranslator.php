@@ -65,6 +65,29 @@ class MicrosoftTranslator
     }
 
     /**
+     * Retrieves an array of translations for a given language pair from the 
+     * store and the MT engine. GetTranslations differs from Translate as it 
+     * returns all available translations. 
+     *
+     * The language of the given text is optional, and will be auto-detected.
+     * The maximum number of translations defaults to four (4).
+     * The category will default to "general"
+     *
+     * @param string $text
+     * @param string $to
+     * @param string|null $from
+     * @param int|null $maxTranslations
+     * @param string|null $category
+     * @return array An array of translated strings
+     */
+    public function getTranslations($text, $to, $from = null, $maxTranslations = 4, $category = null)
+    {
+        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations, $category);
+
+        return $this->call($apiCall);
+    }
+    
+    /**
      * Detects the language of a given text
      *
      * @param string $text
