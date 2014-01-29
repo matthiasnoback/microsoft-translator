@@ -83,7 +83,10 @@ class AccessTokenProvider implements AccessTokenProviderInterface
             );
         }
         catch (\Exception $previous) {
-            throw new RequestFailedException('Request failed', null, $previous);
+            throw new RequestFailedException(sprintf(
+                'Request failed: %s',
+                $previous->getMessage()
+            ), null, $previous);
         }
 
         if (!$response->isSuccessful()) {
