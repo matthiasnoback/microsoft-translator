@@ -13,6 +13,11 @@ class TranslationMatch
         $this->degree = $degree;
     }
 
+    public function __toString()
+    {
+        return $this->translatedText;
+    }
+
     public function getTranslatedText()
     {
         return $this->translatedText;
