@@ -26,6 +26,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $client = new Curl();
+        $client->setTimeout(30);
         $this->browser = new Browser($client);
 
         $clientId = $this->getEnvironmentVariable('MICROSOFT_OAUTH_CLIENT_ID');
