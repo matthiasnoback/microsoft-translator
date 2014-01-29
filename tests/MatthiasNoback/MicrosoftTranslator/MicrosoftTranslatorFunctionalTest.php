@@ -5,6 +5,7 @@ namespace MatthiasNoback\Tests\MicrosoftTranslator;
 use Buzz\Browser;
 use Buzz\Client\Curl;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
 use Doctrine\Common\Cache\ArrayCache;
@@ -64,7 +65,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $translated = $this->translator->getTranslations('This is a test', 'nl', 'en', 1);
 
-        $this->assertSame(array('Dit is een test'), $translated);
+        $this->assertEquals(array(new TranslationMatch('Dit is een test', 100)), $translated);
     }
 
     public function testDetect()

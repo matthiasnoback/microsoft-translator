@@ -3,6 +3,7 @@
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 use MatthiasNoback\Exception\InvalidResponseException;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 
 class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 {
@@ -10,19 +11,20 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
     private $to;
     private $from;
     private $maxTranslations;
-    private $category;
 
-    public function __construct($text, $to, $from = null, $maxTranslations = 4, $category = null)
+    public function __construct($text, $to, $from = null, $maxTranslations = 4)
     {
         if (strlen($text) > self::MAXIMUM_LENGTH_OF_TEXT) {
-            throw new \InvalidArgumentException(sprintf('Text may not be longer than %d characters', self::MAXIMUM_LENGTH_OF_TEXT));
+            throw new \InvalidArgumentException(sprintf(
+                'Text may not be longer than %d characters',
+                self::MAXIMUM_LENGTH_OF_TEXT
+            ));
         }
 
         $this->text = $text;
         $this->to = $to;
         $this->from = $from;
         $this->maxTranslations = $maxTranslations;
-        $this->category = $category;
     }
 
     public function getApiMethodName()
@@ -37,27 +39,15 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 
     public function getRequestContent()
     {
-        $document = new \DOMDocument();
-        $rootElement = $document->createElementNS('http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2', 'TranslateOptions');
-        $document->appendChild($rootElement);
-
-        $categoryElement = $document->createElement('Category');
-        $categoryElement->appendChild($document->createTextNode($this->category));
-        $rootElement->appendChild($categoryElement);
-
-        $typeElement = $document->createElement('ContentType');
-        $typeElement->appendChild($document->createTextNode('text/plain'));
-        $rootElement->appendChild($typeElement);
-
-        return $document->saveXML();
+        return null;
     }
 
     public function getQueryParameters()
     {
         return array(
-            'text'        => $this->text,
-            'from'        => $this->from,
-            'to'          => $this->to,
+            'text' => $this->text,
+            'from' => $this->from,
+            'to' => $this->to,
             'maxTranslations' => $this->maxTranslations
         );
     }
@@ -71,23 +61,32 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
         if ($simpleXml->getName() !== 'GetTranslationsResponse') {
             throw new InvalidResponseException('Expected root element to be a "GetTranslationsResponse" element');
         }
-        if (!isset($simpleXml->{"Translations"})) {
+
+        if (!isset($simpleXml->Translations)) {
             throw new InvalidResponseException('Expected root element of the response to contain a "Translations" element');
         }
 
-        foreach ($simpleXml->{"Translations"} as $getTranslationsResponse) {
+        foreach ($simpleXml->Translations as $getTranslationsResponse) {
             if (isset($getTranslationsResponse->Error) && $getTranslationsResponse->Error) {
-                // TODO maybe find a better way to handle translation errors
-            }
-            else {
+                continue;
+            } else {
                 if (!isset($getTranslationsResponse->TranslationMatch)) {
                     throw new InvalidResponseException('Expected "Translations" element of the response to contain a "TranslationMatch" element');
                 }
                 $matches = $getTranslationsResponse->TranslationMatch;
 
                 foreach ($matches as $translationMatch) {
-                    // MatchDegree and Rating might be interesting...
-                    $translations[] = (string) $translationMatch->TranslatedText;
+                    if (!isset($translationMatch->TranslatedText)) {
+                        throw new InvalidResponseException('Expected "TranslationMatch" element to contain a "TranslatedText" element');
+                    }
+                    if (!isset($translationMatch->MatchDegree)) {
+                        throw new InvalidResponseException('Expected "TranslationMatch" element to contain a "MatchDegree" element');
+                    }
+                    $match = new TranslationMatch(
+                        (string) $translationMatch->TranslatedText,
+                        (integer) $translationMatch->MatchDegree
+                    );
+                    $translations[] = $match;
                 }
             }
         }

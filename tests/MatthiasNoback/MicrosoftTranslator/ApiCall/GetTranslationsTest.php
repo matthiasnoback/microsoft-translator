@@ -3,6 +3,7 @@
 namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 
 class GetTranslationsTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,6 +61,6 @@ class GetTranslationsTest extends \PHPUnit_Framework_TestCase
 </GetTranslationsResponse>
 EOF;
 
-        $this->assertSame(array('Dit is een test'), $apiCall->parseResponse($response));
+        $this->assertEquals(array(new TranslationMatch('Dit is een test', 100)), $apiCall->parseResponse($response));
     }
 }

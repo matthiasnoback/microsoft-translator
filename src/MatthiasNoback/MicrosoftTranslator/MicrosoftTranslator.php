@@ -71,18 +71,16 @@ class MicrosoftTranslator
      *
      * The language of the given text is optional, and will be auto-detected.
      * The maximum number of translations defaults to four (4).
-     * The category will default to "general"
      *
      * @param string $text
      * @param string $to
      * @param string|null $from
      * @param int|null $maxTranslations
-     * @param string|null $category
-     * @return array An array of translated strings
+     * @return \MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch[]
      */
-    public function getTranslations($text, $to, $from = null, $maxTranslations = 4, $category = null)
+    public function getTranslations($text, $to, $from = null, $maxTranslations = 4)
     {
-        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations, $category);
+        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations);
 
         return $this->call($apiCall);
     }

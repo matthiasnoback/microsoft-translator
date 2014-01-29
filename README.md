@@ -24,34 +24,38 @@ You need to register your application at the [Azure DataMarket](https://datamark
 thereby retrieve a "client id" and a "client secret". These kan be used to instantiate the ``AccessTokenProvider`` on which
 the ``MicrosoftTranslator`` depends:
 
-    <?php
+```php
+<?php
 
-    use Buzz\Browser;
-    use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
-    use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
+use Buzz\Browser;
+use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
+use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 
-    $browser = new Browser();
+$browser = new Browser();
 
-    $clientId = '[YOUR-CLIENT-ID]';
-    $clientSecret = '[YOUR-CLIENT-SECRET]';
+$clientId = '[YOUR-CLIENT-ID]';
+$clientSecret = '[YOUR-CLIENT-SECRET]';
 
-    $accessTokenProvider = new AccessTokenProvider($browser, $clientId, $clientSecret);
+$accessTokenProvider = new AccessTokenProvider($browser, $clientId, $clientSecret);
 
-    $translator = new MicrosoftTranslator($browser, $accessTokenProvider);
+$translator = new MicrosoftTranslator($browser, $accessTokenProvider);
+```
 
 ### Optional: enable the access token cache
 
 Each call to the translator service is preceded by a call to Microsoft's OAuth server. Each access token however, may be
 cached for 10 minutes, so you should also use the built-in ``AccessTokenCache``:
 
-    <?php
+```php
+<?php
 
-    use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
-    use Doctrine\Common\Cache\ArrayCache;
+use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
+use Doctrine\Common\Cache\ArrayCache;
 
-    $cache = new ArrayCache();
-    $accessTokenCache = new AccessTokenCache($cache);
-    $accessTokenProvider->setCache($accessTokenCache);
+$cache = new ArrayCache();
+$accessTokenCache = new AccessTokenCache($cache);
+$accessTokenProvider->setCache($accessTokenCache);
+```
 
 The actual cache provider can be anything, as long as it implements the ``Cache`` interface from the Doctrine Common library.
 
@@ -59,25 +63,43 @@ The actual cache provider can be anything, as long as it implements the ``Cache`
 
 ### Translate a string
 
-    $translatedString = $translator->translate('This is a test', 'nl', 'en');
+```php
+$translatedString = $translator->translate('This is a test', 'nl', 'en');
 
-    // $translatedString will be 'Dit is een test', which is Dutch for...
+// $translatedString will be 'Dit is een test', which is Dutch for...
+```
+
+### Translate a string and get multiple translations
+
+```php
+$matches = $translator->getTranslations('This is a test', 'nl', 'en');
+
+foreach ($matches as $match) {
+    // $match is an instance of MatthiasNoback\MicrosoftTranslator\ApiCall\TranslationMatch
+    $degree = $match->getDegree();
+    $translatedText = $match->getTranslatedText();
+}
+```
 
 ### Detect the language of a string
 
-    $text = 'This is a test';
+```php
+$text = 'This is a test';
 
-    $detectedLanguage = $translator->detect($text);
+$detectedLanguage = $translator->detect($text);
 
-    // $detectedLanguage will be 'en'
+// $detectedLanguage will be 'en'
+```
 
 ### Get a spoken version of a string
 
-    $text = 'My name is Matthias';
+```php
+$text = 'My name is Matthias';
 
-    $spoken = $translator->speak($text, 'en', 'audio/mp3', 'MaxQuality');
+$spoken = $translator->speak($text, 'en', 'audio/mp3', 'MaxQuality');
 
-    // $spoken will be the raw MP3 data, which you can save for instance as a file
+// $spoken will be the raw MP3 data, which you can save for instance as a file
+```
 
 ## Tests
 

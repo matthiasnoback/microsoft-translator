@@ -89,7 +89,6 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
         foreach ($simpleXml->{"TranslateArrayResponse"} as $translateArrayResponse) {
             if (isset($translateArrayResponse->Error) && $translateArrayResponse->Error) {
                 $translation = '';
-                // TODO maybe find a better way to handle translation errors
             }
             else {
                 if (!isset($translateArrayResponse->TranslatedText)) {
