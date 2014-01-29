@@ -2,6 +2,8 @@
 
 By Matthias Noback
 
+[![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/badges/quality-score.png?s=a3230ce4a66715d3a62793da48ba24d8a30ab85d)](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/)
+
 ## Installation
 
 Using Composer, add to ``composer.json``:
