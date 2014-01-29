@@ -16,7 +16,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
     {
         $url = self::HTTP_API_URL.$this->getApiMethodName();
         if (null !== $queryParameters = $this->getQueryParameters()) {
-            $url .= '?'.http_build_query($queryParameters);
+            $url .= '?'.http_build_query($queryParameters, null, '&');
         }
 
         return $url;

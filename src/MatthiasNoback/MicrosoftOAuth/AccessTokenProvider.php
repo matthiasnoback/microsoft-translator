@@ -79,7 +79,7 @@ class AccessTokenProvider implements AccessTokenProviderInterface
             $response = $this->browser->post(
                 self::OAUTH_URL,
                 array(),
-                http_build_query($requestParameters)
+                http_build_query($requestParameters, null, '&')
             );
         }
         catch (\Exception $previous) {
