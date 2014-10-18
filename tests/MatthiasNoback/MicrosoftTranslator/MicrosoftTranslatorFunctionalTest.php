@@ -165,10 +165,10 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 
     private function getEnvironmentVariable($name)
     {
-        if (!isset($_ENV[$name])) {
+        if (getenv($name) === false) {
             $this->markTestSkipped(sprintf('Environment variable "%s" is missing', $name));
         }
 
-        return $_ENV[$name];
+        return getenv($name);
     }
 }
