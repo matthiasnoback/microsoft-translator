@@ -3,8 +3,30 @@ language: php
 php:
   - 5.3
   - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
 
 before_script: composer install --dev
 
+matrix:
+  allow_failures:
+    - env: DOCTRINE_VERSION=dev-master
+
+env:
+  - DOCTRINE_VERSION=2.1.*
+  - DOCTRINE_VERSION=2.2.*
+  - DOCTRINE_VERSION=2.3.*
+  - DOCTRINE_VERSION=2.4.*
+  - DOCTRINE_VERSION=dev-master
+
 notifications:
   email: matthiasnoback@gmail.com
+
+before_script:
+  - composer require --no-update doctrine/common $DOCTRINE_VERSION
+  - composer update
+
+cache:
+  directories:
+    - $COMPOSER_CACHE_DIR
