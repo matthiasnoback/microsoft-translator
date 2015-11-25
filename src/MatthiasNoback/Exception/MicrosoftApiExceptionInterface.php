@@ -2,6 +2,6 @@
 
 namespace MatthiasNoback\Exception;
 
-interface MicrosoftAPIExceptionInterface
+interface MicrosoftApiExceptionInterface
 {
 }
