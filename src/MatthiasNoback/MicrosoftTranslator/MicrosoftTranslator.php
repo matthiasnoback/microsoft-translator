@@ -2,10 +2,10 @@
 
 namespace MatthiasNoback\MicrosoftTranslator;
 
+use Buzz\Browser;
+use MatthiasNoback\Exception\RequestFailedException;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenProviderInterface;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
-use MatthiasNoback\Exception\RequestFailedException;
-use Buzz\Browser;
 
 class MicrosoftTranslator
 {
@@ -29,20 +29,27 @@ class MicrosoftTranslator
     }
 
     /**
-     * Translates a given text to the given language
+     * Translates a given text or html to the given language
      *
-     * The language of the given text is optional, and will be auto-detected
+     * The language of the given text or html is optional, and will be auto-detected
      * The category will default to "general"
      *
      * @param string $text
      * @param string $to
      * @param string|null $from
+     * @param string $contentType
      * @param string|null $category
      * @return string
      */
-    public function translate($text, $to, $from = null, $category = null)
+    public function translate(
+        $text,
+        $to,
+        $from = null,
+        $contentType = ApiCall\Translate::CONTENT_TYPE_TEXT,
+        $category = null
+    )
     {
-        $apiCall = new ApiCall\Translate($text, $to, $from, $category);
+        $apiCall = new ApiCall\Translate($text, $to, $from, $contentType, $category);
 
         return $this->call($apiCall);
     }

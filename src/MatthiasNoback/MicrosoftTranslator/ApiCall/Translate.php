@@ -4,12 +4,16 @@ namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 class Translate extends AbstractMicrosoftTranslatorApiCall
 {
+    const CONTENT_TYPE_TEXT = 'text/plain';
+    const CONTENT_TYPE_HTML = 'text/html';
+
     private $text;
     private $to;
     private $from;
+    private $contentType;
     private $category;
 
-    public function __construct($text, $to, $from = null, $category = null)
+    public function __construct($text, $to, $from = null, $contentType = self::CONTENT_TYPE_TEXT, $category = null)
     {
         if (strlen($text) > self::MAXIMUM_LENGTH_OF_TEXT) {
             throw new \InvalidArgumentException(sprintf('Text may not be longer than %d characters', self::MAXIMUM_LENGTH_OF_TEXT));
@@ -18,6 +22,7 @@ class Translate extends AbstractMicrosoftTranslatorApiCall
         $this->text = $text;
         $this->to = $to;
         $this->from = $from;
+        $this->contentType = $contentType;
         $this->category = $category;
     }
 
@@ -41,8 +46,8 @@ class Translate extends AbstractMicrosoftTranslatorApiCall
             'text'        => $this->text,
             'from'        => $this->from,
             'to'          => $this->to,
+            'contentType' => $this->contentType,
             'category'    => $this->category,
-            'contentType' => 'text/plain',
         );
     }
 

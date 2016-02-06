@@ -4,12 +4,13 @@ namespace MatthiasNoback\Tests\MicrosoftTranslator;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
-use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
-use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
-use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
 use Doctrine\Common\Cache\ArrayCache;
 use MatthiasNoback\Buzz\Client\CachedClient;
+use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
+use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\Translate;
+use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 
 class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 {
@@ -45,6 +46,26 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $translated = $this->translator->translate('This is a test', 'nl', 'en');
 
         $this->assertSame('Dit is een test', $translated);
+
+        $translated = $this->translator->translate(
+            '<p class="name">This is a test</p>',
+            'nl',
+            'en',
+            Translate::CONTENT_TYPE_HTML,
+            null
+        );
+
+        $this->assertSame('<p class="name">Dit is een test</p>', $translated);
+
+        $translated = $this->translator->translate(
+            '<p>This is a test.<span class="notranslate">This is a test.</span></p>',
+            'nl',
+            'en',
+            Translate::CONTENT_TYPE_HTML,
+            null
+        );
+
+        $this->assertSame('<p>Dit is een test.<span class="notranslate">This is a test.</span></p>', $translated);
     }
 
     public function testTranslateArray()
@@ -58,7 +79,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array(
             'Dit is een test',
             'Mijn naam is Matthias',
-            'U bent naïef!',
+            'Je bent naïef!',
         ), $translatedTexts);
     }
 
