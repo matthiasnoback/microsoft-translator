@@ -29,15 +29,16 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         $text = 'text';
         $from = 'from';
         $to = 'to';
+        $contentType = 'contentType';
         $category = 'category';
 
-        $apiCall = new ApiCall\Translate($text, $to, $from, $category);
+        $apiCall = new ApiCall\Translate($text, $to, $from, $category, $contentType);
         $this->assertEquals(array(
             'text'        => $text,
             'from'        => $from,
             'to'          => $to,
+            'contentType' => $contentType,
             'category'    => $category,
-            'contentType' => 'text/plain',
         ), $apiCall->getQueryParameters());
     }
 
