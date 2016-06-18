@@ -51,8 +51,8 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
             '<p class="name">This is a test</p>',
             'nl',
             'en',
-            Translate::CONTENT_TYPE_HTML,
-            null
+            null,
+            Translate::CONTENT_TYPE_HTML
         );
 
         $this->assertSame('<p class="name">Dit is een test</p>', $translated);
@@ -61,8 +61,8 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
             '<p>This is a test.<span class="notranslate">This is a test.</span></p>',
             'nl',
             'en',
-            Translate::CONTENT_TYPE_HTML,
-            null
+            null,
+            Translate::CONTENT_TYPE_HTML
         );
 
         $this->assertSame('<p>Dit is een test.<span class="notranslate">This is a test.</span></p>', $translated);

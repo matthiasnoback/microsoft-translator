@@ -13,7 +13,7 @@ class Translate extends AbstractMicrosoftTranslatorApiCall
     private $contentType;
     private $category;
 
-    public function __construct($text, $to, $from = null, $contentType = self::CONTENT_TYPE_TEXT, $category = null)
+    public function __construct($text, $to, $from = null, $category = null, $contentType = self::CONTENT_TYPE_TEXT)
     {
         if (strlen($text) > self::MAXIMUM_LENGTH_OF_TEXT) {
             throw new \InvalidArgumentException(sprintf('Text may not be longer than %d characters', self::MAXIMUM_LENGTH_OF_TEXT));

@@ -32,7 +32,7 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         $contentType = 'contentType';
         $category = 'category';
 
-        $apiCall = new ApiCall\Translate($text, $to, $from, $contentType, $category);
+        $apiCall = new ApiCall\Translate($text, $to, $from, $category, $contentType);
         $this->assertEquals(array(
             'text'        => $text,
             'from'        => $from,

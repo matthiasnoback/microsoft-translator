@@ -45,11 +45,11 @@ class MicrosoftTranslator
         $text,
         $to,
         $from = null,
-        $contentType = ApiCall\Translate::CONTENT_TYPE_TEXT,
-        $category = null
+        $category = null,
+        $contentType = ApiCall\Translate::CONTENT_TYPE_TEXT
     )
     {
-        $apiCall = new ApiCall\Translate($text, $to, $from, $contentType, $category);
+        $apiCall = new ApiCall\Translate($text, $to, $from, $category, $contentType);
 
         return $this->call($apiCall);
     }
