@@ -22,8 +22,28 @@ Then using the Composer binary:
 
 This library uses the Buzz browser to make calls to the [Microsoft Translator V2 API](http://msdn.microsoft.com/en-us/library/ff512419.aspx).
 
+You need to [obtain a Microsoft Azure Cognitive Services subscription Key](http://docs.microsofttranslator.com/text-translate.html). This can be used to instantiate the ``AzureTokenProvider``:
+
+```php
+<?php
+
+use Buzz\Browser;
+use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
+use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
+
+$browser = new Browser();
+
+$azureKey = '[YOUR-AZURE-SUBSCRIPTION-KEY]';
+
+$accessTokenProvider = new AzureTokenProvider($browser, $azureKey);
+
+$translator = new MicrosoftTranslator($browser, $accessTokenProvider);
+```
+
+## Azure DataMarket token usage [deprecated]
+
 You need to register your application at the [Azure DataMarket](https://datamarket.azure.com/developer/applications) and
-thereby retrieve a "client id" and a "client secret". These kan be used to instantiate the ``AccessTokenProvider`` on which
+thereby retrieve a "client id" and a "client secret". These can be used to instantiate the ``AccessTokenProvider`` (deprecated) on which
 the ``MicrosoftTranslator`` depends:
 
 ```php
@@ -42,6 +62,7 @@ $accessTokenProvider = new AccessTokenProvider($browser, $clientId, $clientSecre
 
 $translator = new MicrosoftTranslator($browser, $accessTokenProvider);
 ```
+
 
 ### Optional: enable the access token cache
 
