@@ -63,7 +63,8 @@ class AzureTokenProvider implements AccessTokenProviderInterface
     {
         try {
             $response = $this->browser->post(
-                self::AUTH_URL . "?Subscription-Key=" . urlencode($this->azureKey)
+                self::AUTH_URL . "?Subscription-Key=" . urlencode($this->azureKey),
+                ['Content-Length' => 0]
             );
         }
         catch (\Exception $previous) {

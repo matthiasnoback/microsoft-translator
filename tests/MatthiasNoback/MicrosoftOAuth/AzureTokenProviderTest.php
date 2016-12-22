@@ -20,7 +20,8 @@ class AzuresTokenProviderTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('post')
             ->with(
-                'https://api.cognitive.microsoft.com/sts/v1.0/issueToken?Subscription-Key=' . $azureKey
+                'https://api.cognitive.microsoft.com/sts/v1.0/issueToken?Subscription-Key=' . $azureKey,
+                ['Content-Length' => 0]
             )
             ->will($this->returnValue($response));
         $accessTokenProvider = new AzureTokenProvider($browser, $azureKey);
