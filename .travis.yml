@@ -24,7 +24,7 @@ env:
   - DOCTRINE_VERSION=dev-master
 
 notifications:
-  email: matthiasnoback@gmail.com
+  email: alayn@barnetik.com
 
 before_script:
   - composer require --no-update doctrine/common $DOCTRINE_VERSION
