@@ -92,7 +92,6 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $text = 'This is a test';
 
         $detectedLanguage = $this->translator->detect($text);
-
         $this->assertSame('en', $detectedLanguage);
     }
 
