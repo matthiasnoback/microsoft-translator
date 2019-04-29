@@ -17,28 +17,31 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return 'Detect';
+        return 'detect';
     }
 
     public function getHttpMethod()
     {
-        return 'GET';
+        return 'POST';
     }
 
     public function getRequestContent()
     {
+      return array(
+        array(
+          'text' => $this->text,
+        )
+      );
     }
 
     public function getQueryParameters()
     {
-        return array(
-            'text' => $this->text,
-        );
     }
 
     public function parseResponse($response)
     {
-        return json_decode($response);
+        $result = json_decode($response, true);
+        return $result[0]['language'];
         // $simpleXml = $this->toSimpleXML($response);
         //
         // return (string) $simpleXml;

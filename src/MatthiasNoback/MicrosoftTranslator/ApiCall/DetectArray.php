@@ -21,7 +21,7 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return 'DetectArray';
+        return 'detect';
     }
 
     public function getHttpMethod()
@@ -36,13 +36,12 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
         $rootElement = $document->createElementNS('http://schemas.microsoft.com/2003/10/Serialization/Arrays', 'ArrayOfstring');
         $document->appendChild($rootElement);
 
+        $content = [];
         foreach ($this->texts as $text) {
-            $stringElement = $document->createElement('string');
-            $stringElement->appendChild($document->createTextNode($text));
-            $rootElement->appendChild($stringElement);
+            $content[] = ['Text' => $text];
         }
 
-        return $document->saveXML();
+        return $content;
     }
 
     public function getQueryParameters()
@@ -51,8 +50,11 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
 
     public function parseResponse($response)
     {
-        $languageCodes = self::getArrayOfStringsFromXml($response);
-
-        return $languageCodes;
+      $result = [];
+      $texts = json_decode($response, true);
+      foreach ($texts as $text) {
+        $result[] = $text['language'];
+      }
+      return $result;
     }
 }
