@@ -4,24 +4,20 @@ namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 use MatthiasNoback\Exception\InvalidResponseException;
 
-class TranslateArray extends AbstractMicrosoftTranslatorApiCall
+class TranslateArray extends Translate
 {
     const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 2000;
 
-    private $texts;
-    private $to;
-    private $from;
-
-    public function __construct(array $texts, $to, $from = null)
+    public function __construct($text, $to, $from = null, $category = null, $contentType = self::CONTENT_TYPE_TEXT)
     {
-        if (count($texts) > self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS) {
+        if (count($text) > self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS) {
             throw new \InvalidArgumentException(sprintf(
                 'A maximum amount of %d texts is allowed',
                 self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS
             ));
         }
 
-        $totalLengthOfTexts = self::calculateTotalLengthOfTexts($texts);
+        $totalLengthOfTexts = self::calculateTotalLengthOfTexts($text);
         if ($totalLengthOfTexts > self::MAXIMUM_LENGTH_OF_TEXT) {
             throw new \InvalidArgumentException(sprintf(
                 'A maximum amount of %d characters is allowed',
@@ -29,25 +25,17 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
             ));
         }
 
-        $this->texts = $texts;
+        $this->text = $text;
         $this->to = $to;
         $this->from = $from;
-    }
-
-    public function getApiMethodName()
-    {
-        return 'translate';
-    }
-
-    public function getHttpMethod()
-    {
-        return 'POST';
+        $this->contentType = $contentType;
+        $this->category = $category;
     }
 
     public function getRequestContent()
     {
         $content = array();
-        foreach ($this->texts as $text) {
+        foreach ($this->text as $text) {
             $content[] = [
                 'Text' =>  $text
             ];
@@ -55,36 +43,13 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
         return $content;
     }
 
-    public function getQueryParameters()
-    {
-    }
-
     public function parseResponse($response)
     {
-        return json_decode($response);
-        $simpleXml = $this->toSimpleXML($response);
-
-        $translations = array();
-
-        if (!isset($simpleXml->{"TranslateArrayResponse"})) {
-            throw new InvalidResponseException('Expected root element of the response to contain one or more "TranslateArrayResponse" elements');
+        $result = [];
+        $texts = json_decode($response, true);
+        foreach ($texts as $text) {
+          $result[] = $text['translations'][0]['text'];
         }
-
-        foreach ($simpleXml->{"TranslateArrayResponse"} as $translateArrayResponse) {
-            if (isset($translateArrayResponse->Error) && $translateArrayResponse->Error) {
-                $translation = '';
-            }
-            else {
-                if (!isset($translateArrayResponse->TranslatedText)) {
-                    throw new InvalidResponseException('Expected root element of the response to contain a "TranslatedText" element');
-                }
-
-                $translation = (string) $translateArrayResponse->TranslatedText;
-            }
-
-            $translations[] = $translation;
-        }
-
-        return $translations;
+        return $result;
     }
 }

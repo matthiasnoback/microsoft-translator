@@ -7,11 +7,11 @@ class Translate extends AbstractMicrosoftTranslatorApiCall
     const CONTENT_TYPE_TEXT = 'plain';
     const CONTENT_TYPE_HTML = 'html';
 
-    private $text;
-    private $to;
-    private $from;
-    private $contentType;
-    private $category;
+    protected $text;
+    protected $to;
+    protected $from;
+    protected $contentType;
+    protected $category;
 
     public function __construct($text, $to, $from = null, $category = null, $contentType = self::CONTENT_TYPE_TEXT)
     {
