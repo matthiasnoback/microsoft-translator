@@ -21,29 +21,40 @@ class BreakSentences extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return 'BreakSentences';
+        return 'breaksentence';
     }
 
     public function getHttpMethod()
     {
-        return 'GET';
+        return 'POST';
     }
 
     public function getRequestContent()
     {
+        return array(
+            array(
+                'Text' => $this->text
+            )
+        );
     }
 
     public function getQueryParameters()
     {
         return array(
-            'text' => $this->text,
             'language' => $this->language,
         );
     }
 
     public function parseResponse($response)
     {
-        return json_decode($response);
+        $boundaries = json_decode($response, true);
+        $sentences = [];
+        $init = 0;
+        foreach ($boundaries[0]['sentLen'] as $offset) {
+            $sentences[] = mb_substr($this->text, $init, $offset);
+            $init += $offset;
+        }
+        return $sentences;
         //
         // $simpleXml = $this->toSimpleXML($response);
         //
