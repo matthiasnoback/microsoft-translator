@@ -43,24 +43,26 @@ class BreakSentences extends AbstractMicrosoftTranslatorApiCall
 
     public function parseResponse($response)
     {
-        $simpleXml = $this->toSimpleXML($response);
-
-        $start = 0;
-
-        $sentences = array();
-
-        if (!isset($simpleXml->{"int"})) {
-            throw new InvalidResponseException('Expected the root element of the response to contain one or more "int" elements');
-        }
-
-        foreach ($simpleXml->{"int"} as $sentenceLength) {
-            $sentenceLength = (integer) $sentenceLength;
-
-            $sentence = substr($this->text, $start, $sentenceLength);
-            $sentences[] = $sentence;
-            $start += $sentenceLength;
-        }
-
-        return $sentences;
+        return json_decode($response);
+        //
+        // $simpleXml = $this->toSimpleXML($response);
+        //
+        // $start = 0;
+        //
+        // $sentences = array();
+        //
+        // if (!isset($simpleXml->{"int"})) {
+        //     throw new InvalidResponseException('Expected the root element of the response to contain one or more "int" elements');
+        // }
+        //
+        // foreach ($simpleXml->{"int"} as $sentenceLength) {
+        //     $sentenceLength = (integer) $sentenceLength;
+        //
+        //     $sentence = substr($this->text, $start, $sentenceLength);
+        //     $sentences[] = $sentence;
+        //     $start += $sentenceLength;
+        // }
+        //
+        // return $sentences;
     }
 }

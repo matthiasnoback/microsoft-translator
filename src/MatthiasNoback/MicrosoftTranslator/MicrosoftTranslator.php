@@ -72,9 +72,9 @@ class MicrosoftTranslator
     }
 
     /**
-     * Retrieves an array of translations for a given language pair from the 
-     * store and the MT engine. GetTranslations differs from Translate as it 
-     * returns all available translations. 
+     * Retrieves an array of translations for a given language pair from the
+     * store and the MT engine. GetTranslations differs from Translate as it
+     * returns all available translations.
      *
      * The language of the given text is optional, and will be auto-detected.
      * The maximum number of translations defaults to four (4).
@@ -91,7 +91,7 @@ class MicrosoftTranslator
 
         return $this->call($apiCall);
     }
-    
+
     /**
      * Detects the language of a given text
      *
@@ -198,14 +198,15 @@ class MicrosoftTranslator
     {
         $url = $apiCall->getUrl();
         $method = $apiCall->getHttpMethod();
+        $content = $apiCall->getRequestContent();
         $headers = array(
             'Authorization: Bearer '.$this->getAccessToken(),
-            'Content-Type: text/xml',
+            'Content-Type: application/json',
+            'Content-Length: ' . mb_strlen(json_encode($content))
         );
-        $content = $apiCall->getRequestContent();
 
         try {
-            $response = $this->browser->call($url, $method, $headers, $content);
+            $response = $this->browser->call($url, $method, $headers, json_encode($content));
         }
         catch (\Exception $previous) {
             throw new RequestFailedException(sprintf(

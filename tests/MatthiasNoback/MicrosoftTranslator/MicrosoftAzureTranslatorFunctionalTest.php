@@ -44,7 +44,6 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $translated = $this->translator->translate('This is a test', 'nl', 'en');
 
         $this->assertSame('Dit is een test', $translated);
-
         $translated = $this->translator->translate(
             '<p class="name">This is a test</p>',
             'nl',

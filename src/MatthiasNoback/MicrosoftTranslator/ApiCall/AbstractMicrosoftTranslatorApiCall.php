@@ -6,7 +6,7 @@ use MatthiasNoback\Exception\InvalidResponseException;
 
 abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
 {
-    const HTTP_API_URL = 'http://api.microsofttranslator.com/V2/Http.svc/';
+    const HTTP_API_URL = 'https://api.cognitive.microsofttranslator.com/';
 
     const MAXIMUM_LENGTH_OF_TEXT = 10000;
 
@@ -16,9 +16,9 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
     {
         $url = self::HTTP_API_URL.$this->getApiMethodName();
         if (null !== $queryParameters = $this->getQueryParameters()) {
+            $queryParameters['api-version'] = '3.0';
             $url .= '?'.http_build_query($queryParameters, null, '&');
         }
-
         return $url;
     }
 
@@ -46,6 +46,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
 
     protected static function getArrayOfStringsFromXml($xmlString)
     {
+        var_dump($xmlString);exit();
         $simpleXml = self::toSimpleXML($xmlString);
 
         if (!isset($simpleXml->{"string"})) {

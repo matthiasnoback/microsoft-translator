@@ -36,7 +36,7 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return 'TranslateArray';
+        return 'translate';
     }
 
     public function getHttpMethod()
@@ -46,30 +46,13 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
 
     public function getRequestContent()
     {
-        $document = new \DOMDocument();
-        $document->appendChild($rootElement = $document->createElement('TranslateArrayRequest'));
-
-        $appIdElement = $document->createElement('AppId');
-        $rootElement->appendChild($appIdElement);
-
-        $fromElement = $document->createElement('From');
-        $fromElement->appendChild($document->createTextNode($this->from));
-        $rootElement->appendChild($fromElement);
-
-        $textsElement = $document->createElement('Texts');
-        $rootElement->appendChild($textsElement);
-
+        $content = array();
         foreach ($this->texts as $text) {
-            $stringElement = $document->createElementNS('http://schemas.microsoft.com/2003/10/Serialization/Arrays', 'string');
-            $stringElement->appendChild($document->createTextNode($text));
-            $textsElement->appendChild($stringElement);
+            $content[] = [
+                'Text' =>  $text
+            ];
         }
-
-        $toElement = $document->createElement('To');
-        $toElement->appendChild($document->createTextNode($this->to));
-        $rootElement->appendChild($toElement);
-
-        return $document->saveXML();
+        return $content;
     }
 
     public function getQueryParameters()
@@ -78,6 +61,7 @@ class TranslateArray extends AbstractMicrosoftTranslatorApiCall
 
     public function parseResponse($response)
     {
+        return json_decode($response);
         $simpleXml = $this->toSimpleXML($response);
 
         $translations = array();

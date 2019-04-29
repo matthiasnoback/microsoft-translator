@@ -4,8 +4,8 @@ namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 class Translate extends AbstractMicrosoftTranslatorApiCall
 {
-    const CONTENT_TYPE_TEXT = 'text/plain';
-    const CONTENT_TYPE_HTML = 'text/html';
+    const CONTENT_TYPE_TEXT = 'plain';
+    const CONTENT_TYPE_HTML = 'html';
 
     private $text;
     private $to;
@@ -28,33 +28,36 @@ class Translate extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return 'Translate';
+        return 'translate';
     }
 
     public function getHttpMethod()
     {
-        return 'GET';
+        return 'POST';
     }
 
     public function getRequestContent()
     {
+        return array(
+            array(
+                'Text' => $this->text
+            )
+        );
     }
 
     public function getQueryParameters()
     {
         return array(
-            'text'        => $this->text,
             'from'        => $this->from,
             'to'          => $this->to,
-            'contentType' => $this->contentType,
+            'textType' => $this->contentType,
             'category'    => $this->category,
         );
     }
 
     public function parseResponse($response)
     {
-        $simpleXml = $this->toSimpleXML($response);
-
-        return (string) $simpleXml;
+        $response = json_decode($response, true);
+        return $response[0]['translations'][0]['text'];
     }
 }

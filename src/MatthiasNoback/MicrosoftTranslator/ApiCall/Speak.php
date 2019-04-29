@@ -59,6 +59,7 @@ class Speak extends AbstractMicrosoftTranslatorApiCall
 
     public function parseResponse($response)
     {
+        return json_decode($response);
         return $response;
     }
 }

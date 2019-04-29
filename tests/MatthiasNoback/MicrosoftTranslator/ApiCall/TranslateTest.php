@@ -15,13 +15,13 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
         new ApiCall\Translate($text, 'nl');
     }
 
-    public function testGetRequestToTranslateMethodWithNoRequestContent()
+    public function testGetRequestToTranslateCallContent()
     {
         $apiCall = new ApiCall\Translate('text', 'nl');
 
-        $this->assertSame('Translate', $apiCall->getApiMethodName());
-        $this->assertSame('GET', $apiCall->getHttpMethod());
-        $this->assertSame(null, $apiCall->getRequestContent());
+        $this->assertSame('translate', $apiCall->getApiMethodName());
+        $this->assertSame('POST', $apiCall->getHttpMethod());
+        $this->assertSame([['Text' => 'text']], $apiCall->getRequestContent());
     }
 
     public function testQueryParameters()
@@ -34,10 +34,9 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
 
         $apiCall = new ApiCall\Translate($text, $to, $from, $category, $contentType);
         $this->assertEquals(array(
-            'text'        => $text,
             'from'        => $from,
             'to'          => $to,
-            'contentType' => $contentType,
+            'textType' => $contentType,
             'category'    => $category,
         ), $apiCall->getQueryParameters());
     }

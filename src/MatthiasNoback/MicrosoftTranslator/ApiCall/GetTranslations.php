@@ -54,6 +54,7 @@ class GetTranslations extends AbstractMicrosoftTranslatorApiCall
 
     public function parseResponse($response)
     {
+        return json_decode($response);
         $simpleXml = $this->toSimpleXML($response);
 
         $translations = array();
