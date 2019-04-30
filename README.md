@@ -41,7 +41,8 @@ $translator = new MicrosoftTranslator($browser, $accessTokenProvider);
 ```
 
 ## Differences with V2 library
-Since Speak API has been removed from the Microsoft Translator Text API on v3.0, this has been removed from this package too.
+ * Removed speak method: Speak API has been removed from the Microsoft Translator Text API on v3.0.
+ * Removed getTranslations method: GetTranslations functionality has been removed from the Microsoft Translator Text API on v3.0.
 
 ## Azure DataMarket token usage [deprecated]
 
@@ -136,4 +137,5 @@ There is also a [MicrosoftTranslatorServiceProvider](https://github.com/matthias
 
 ## TODO
 
-There are some more calls to be implemented, and also some more tests to be added.
+ * Make CachedClient work (now bypasses any SendRequest call)
+ * There are some more calls to be implemented, and also some more tests to be added.
