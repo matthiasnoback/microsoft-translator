@@ -6,6 +6,7 @@ use Buzz\Client\ClientInterface;
 use Doctrine\Common\Cache\Cache;
 use Buzz\Message\RequestInterface;
 use Buzz\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
 
 /**
  * The CachedClient wraps an existing ClientInterface. It intercepts
@@ -73,6 +74,15 @@ class CachedClient implements ClientInterface
     }
 
     /**
+     * Populates the supplied response with the response for the supplied request.
+     *
+     * @param Psr7RequestInterface $request  A request object
+     */
+    public function sendRequest(Psr7RequestInterface $request)
+    {
+        return $this->client->sendRequest($request);
+    }
+    /**
      * Get the number of times the cache already contained a response, and thus,
      * no real HTTP request made
      *
@@ -110,6 +120,24 @@ class CachedClient implements ClientInterface
         $normalizedRequest = $this->getNormalizedRequest($request);
 
         return md5($normalizedRequest->__toString());
+    }
+
+    /**
+     * Generate a unique key for the given request
+     *
+     * The request is made invariant by sorting the headers alphabetically and by
+     * removing headers that are to be ignored.
+     *
+     * @see CachedClient::__construct()
+     *
+     * @param \Buzz\Message\RequestInterface $request
+     * @return string
+     */
+    private function generateCacheKeyForPsr7Request(Psr7RequestInterface $request)
+    {
+        // $normalizedRequest = $this->getNormalizedRequest($request);
+
+        return md5(serialize($request));
     }
 
     /**

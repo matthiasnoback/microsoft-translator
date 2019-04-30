@@ -72,27 +72,6 @@ class MicrosoftTranslator
     }
 
     /**
-     * Retrieves an array of translations for a given language pair from the
-     * store and the MT engine. GetTranslations differs from Translate as it
-     * returns all available translations.
-     *
-     * The language of the given text is optional, and will be auto-detected.
-     * The maximum number of translations defaults to four (4).
-     *
-     * @param string $text
-     * @param string $to
-     * @param string|null $from
-     * @param int|null $maxTranslations
-     * @return \MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch[]
-     */
-    public function getTranslations($text, $to, $from = null, $maxTranslations = 4)
-    {
-        $apiCall = new ApiCall\GetTranslations($text, $to, $from, $maxTranslations);
-
-        return $this->call($apiCall);
-    }
-
-    /**
      * Detects the language of a given text
      *
      * @param string $text
