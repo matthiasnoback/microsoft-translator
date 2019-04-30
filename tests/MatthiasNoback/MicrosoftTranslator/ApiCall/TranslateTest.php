@@ -45,7 +45,11 @@ class TranslateTest extends \PHPUnit_Framework_TestCase
     {
         $apiCall = new ApiCall\Translate('text', 'nl');
 
-        $response = '<string xmlns="http://schemas.microsoft.com/2003/10/Serialization/">Dit is een test</string>';
+        $response = json_encode([
+            ['translations' => [
+                ['text' => 'Dit is een test'],
+            ]]
+        ]);
 
         $this->assertSame('Dit is een test', $apiCall->parseResponse($response));
     }

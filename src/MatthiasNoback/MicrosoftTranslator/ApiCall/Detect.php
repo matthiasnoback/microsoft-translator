@@ -29,7 +29,7 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
     {
       return array(
         array(
-          'text' => $this->text,
+          'Text' => $this->text,
         )
       );
     }

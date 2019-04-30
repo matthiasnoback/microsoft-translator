@@ -6,13 +6,29 @@ use MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 class TranslateArrayTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPostRequestToTranslateArrayMethodWithNoQueryParameters()
+    public function testPostRequestMethod()
     {
         $apiCall = new ApiCall\TranslateArray(array('text'), 'nl');
 
-        $this->assertSame('TranslateArray', $apiCall->getApiMethodName());
+        $this->assertSame('translate', $apiCall->getApiMethodName());
         $this->assertSame('POST', $apiCall->getHttpMethod());
-        $this->assertSame(null, $apiCall->getQueryParameters());
+    }
+
+    public function testQueryParameters()
+    {
+        $text = 'text';
+        $from = 'from';
+        $to = 'to';
+        $contentType = 'contentType';
+        $category = 'category';
+
+        $apiCall = new ApiCall\Translate($text, $to, $from, $category, $contentType);
+        $this->assertEquals(array(
+            'from'        => $from,
+            'to'          => $to,
+            'textType' => $contentType,
+            'category'    => $category,
+        ), $apiCall->getQueryParameters());
     }
 
     public function testValidatesNumberOfOfTexts()
@@ -49,33 +65,40 @@ class TranslateArrayTest extends \PHPUnit_Framework_TestCase
 
         $requestContent = $apiCall->getRequestContent();
 
-        $expectedRequestContent =
-<<<EOF
-<?xml version="1.0"?>
-<TranslateArrayRequest><AppId/><From>$from</From><Texts><string xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">{$texts[0]}</string><string xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">{$texts[1]}</string></Texts><To>{$to}</To></TranslateArrayRequest>
-
-EOF;
-        $this->assertSame($expectedRequestContent, $requestContent);
+        $expectedRequestContent = [
+            [
+                'Text' => $texts[0]
+            ],
+            [
+                'Text' => $texts[1]
+            ]
+        ];
+        $this->assertSame(json_encode($expectedRequestContent), json_encode($requestContent));
     }
 
     public function testParseResponse()
     {
-        $response = <<<EOF
-<ArrayOfTranslateArrayResponse xmlns="http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><TranslateArrayResponse><From>en</From><OriginalTextSentenceLengths xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"><a:int>14</a:int></OriginalTextSentenceLengths><TranslatedText>Dit is een test</TranslatedText><TranslatedTextSentenceLengths xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"><a:int>15</a:int></TranslatedTextSentenceLengths></TranslateArrayResponse><TranslateArrayResponse><From>en</From><OriginalTextSentenceLengths xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"><a:int>19</a:int></OriginalTextSentenceLengths><TranslatedText>Mijn naam is Matthias</TranslatedText><TranslatedTextSentenceLengths xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"><a:int>21</a:int></TranslatedTextSentenceLengths></TranslateArrayResponse></ArrayOfTranslateArrayResponse>
-EOF;
-
         $texts = array(
             'This is a test',
-            'My name is Matthias',
+            'My name is Matthias'
         );
+
+        $response = json_encode([
+            ['translations' => [
+                ['text' => 'Dit is een test'],
+            ]],
+            ['translations' => [
+                ['text' => 'Mijn naam is Matthias']
+            ]]
+        ]);
+
         $to = 'nl';
         $from = 'en';
         $apiCall = new ApiCall\TranslateArray($texts, $to, $from);
-
         $translatedTexts = $apiCall->parseResponse($response);
-        $this->assertSame(array(
+        $this->assertSame(json_encode(array(
             'Dit is een test',
             'Mijn naam is Matthias',
-        ), $translatedTexts);
+        )), json_encode($translatedTexts));
     }
 }
