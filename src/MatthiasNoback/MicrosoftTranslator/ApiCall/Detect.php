@@ -42,8 +42,5 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
     {
         $result = json_decode($response, true);
         return $result[0]['language'];
-        // $simpleXml = $this->toSimpleXML($response);
-        //
-        // return (string) $simpleXml;
     }
 }

@@ -9,18 +9,34 @@ abstract class AbstractGetLanguages extends AbstractMicrosoftTranslatorApiCall
         return 'GET';
     }
 
+    public function getApiMethodName()
+    {
+        return 'languages';
+    }
+
     public function getRequestContent()
     {
     }
 
     public function getQueryParameters()
     {
+        return  [
+            'scope' => 'translation'
+        ];
     }
 
     public function parseResponse($response)
     {
-        $languageCodes = self::getArrayOfStringsFromXml($response);
+        $result = json_decode($response, true);
+        return $result['translation'];
+    }
 
-        return $languageCodes;
+    public function getRequestHeaders() {
+        return [];
+    }
+
+    public function sendHeaders()
+    {
+        return false;
     }
 }

@@ -124,27 +124,6 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         ), $sentences);
     }
 
-    public function testSpeak()
-    {
-        $saveAudioTo = $this->getEnvironmentVariable('MICROSOFT_TRANSLATOR_SAVE_AUDIO_TO');
-        if (!is_writable($saveAudioTo)) {
-            $this->markTestSkipped(sprintf('Can not save audio file to "%s"', $saveAudioTo));
-        }
-
-        $text = 'My name is Matthias';
-
-        $spoken = $this->translator->speak($text, 'en', 'audio/mp3', 'MaxQuality');
-
-        file_put_contents($saveAudioTo.'/speak.mp3', $spoken);
-    }
-
-    public function testGetLanguagesForSpeak()
-    {
-        $languageCodes = $this->translator->getLanguagesForSpeak();
-        $this->assertInternalType('array', $languageCodes);
-        $this->assertTrue(count($languageCodes) > 30);
-    }
-
     public function testGetLanguagesForTranslate()
     {
         $languageCodes = $this->translator->getLanguagesForTranslate();
@@ -156,7 +135,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLanguageNames()
     {
-        $languageCodes = $this->translator->getLanguagesForSpeak();
+        $languageCodes = $this->translator->getLanguagesForTranslate();
 
         $languageNames = $this->translator->getLanguageNames($languageCodes, 'nl');
 

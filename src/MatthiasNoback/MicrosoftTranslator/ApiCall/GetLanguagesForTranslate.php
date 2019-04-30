@@ -4,8 +4,9 @@ namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
 class GetLanguagesForTranslate extends AbstractGetLanguages
 {
-    public function getApiMethodName()
+    public function parseResponse($response)
     {
-        return 'GetLanguagesForTranslate';
+        $languages = parent::parseResponse($response);
+        return array_keys($languages);
     }
 }

@@ -36,6 +36,8 @@ interface ApiCallInterface
      */
     public function getQueryParameters();
 
+    public function getRequestHeaders();
+
     /**
      * Transform the response into something useful
      *
@@ -44,4 +46,6 @@ interface ApiCallInterface
      * @return mixed
      */
     public function parseResponse($response);
+
+    public function sendHeaders();
 }

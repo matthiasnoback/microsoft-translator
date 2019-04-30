@@ -133,36 +133,6 @@ class MicrosoftTranslator
     }
 
     /**
-     * Get a spoken version of the given text (in WAV or MP3 format)
-     *
-     * @param $text
-     * @param string $language
-     * @param string|null $format Either audio/wav or audio/mp3
-     * @param string|null $options Either MaxQuality or MinSize
-     * @return string Raw data for either an MP3 or a WAV file
-     */
-    public function speak($text, $language, $format = null, $options = null)
-    {
-        $apiCall = new ApiCall\Speak($text, $language, $format, $options);
-
-        return $this->call($apiCall);
-    }
-
-    /**
-     * Get a list of available language codes for the Speak call
-     *
-     * @see MicrosoftTranslator::speak()
-     *
-     * @return array An array of language codes
-     */
-    public function getLanguagesForSpeak()
-    {
-        $apiCall = new ApiCall\GetLanguagesForSpeak();
-
-        return $this->call($apiCall);
-    }
-
-    /**
      * Get a list of available language codes for the Translate calls
      *
      * @see MicrosoftTranslator::translate()
@@ -199,11 +169,14 @@ class MicrosoftTranslator
         $url = $apiCall->getUrl();
         $method = $apiCall->getHttpMethod();
         $content = $apiCall->getRequestContent();
-        $headers = array(
-            'Authorization: Bearer '.$this->getAccessToken(),
-            'Content-Type: application/json',
-            'Content-Length: ' . mb_strlen(json_encode($content))
-        );
+        $headers = [];
+        if ($apiCall->sendHeaders()) {
+            $headers = array(
+                'Authorization: Bearer '.$this->getAccessToken(),
+                'Content-Type: application/json',
+                'Content-Length: ' . mb_strlen(json_encode($content))
+            );
+        }
 
         try {
             $response = $this->browser->call($url, $method, $headers, json_encode($content));
