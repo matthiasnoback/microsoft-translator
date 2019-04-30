@@ -1,6 +1,6 @@
-# PHP library for the Microsoft Translator V2 API
+# PHP library for the Microsoft Translator V3 API
 
-By Matthias Noback
+By Matthias Noback (maintained by Alayn Gortazar)
 
 [![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/badges/quality-score.png?s=a3230ce4a66715d3a62793da48ba24d8a30ab85d)](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/) [![Dependency Status](https://www.versioneye.com/user/projects/57682da5fdabcd003c031381/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57682da5fdabcd003c031381)
 
@@ -20,7 +20,7 @@ Then using the Composer binary:
 
 ## Usage
 
-This library uses the Buzz browser to make calls to the [Microsoft Translator V2 API](http://msdn.microsoft.com/en-us/library/ff512419.aspx).
+This library uses the Buzz browser to make calls to the [Microsoft Translator Text API 3.0](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages?tabs=curl).
 
 You need to [obtain a Microsoft Azure Cognitive Services subscription Key](http://docs.microsofttranslator.com/text-translate.html). This can be used to instantiate the ``AzureTokenProvider``:
 
@@ -40,7 +40,12 @@ $accessTokenProvider = new AzureTokenProvider($browser, $azureKey);
 $translator = new MicrosoftTranslator($browser, $accessTokenProvider);
 ```
 
+## Differences with V2 library
+Since Speak API has been removed from the Microsoft Translator Text API on v3.0, this has been removed from this package too.
+
 ## Azure DataMarket token usage [deprecated]
+
+ ** This has not been tested on V3 API, so it may be failing **
 
 You need to register your application at the [Azure DataMarket](https://datamarket.azure.com/developer/applications) and
 thereby retrieve a "client id" and a "client secret". These can be used to instantiate the ``AccessTokenProvider`` (deprecated) on which
@@ -112,16 +117,6 @@ $text = 'This is a test';
 $detectedLanguage = $translator->detect($text);
 
 // $detectedLanguage will be 'en'
-```
-
-### Get a spoken version of a string
-
-```php
-$text = 'My name is Matthias';
-
-$spoken = $translator->speak($text, 'en', 'audio/mp3', 'MaxQuality');
-
-// $spoken will be the raw MP3 data, which you can save for instance as a file
 ```
 
 ## Tests
