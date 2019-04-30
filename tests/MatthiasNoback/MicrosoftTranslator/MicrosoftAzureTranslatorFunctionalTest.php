@@ -132,25 +132,6 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testCachedBrowserClient()
-    {
-        $currentClient = $this->browser->getClient();
-
-        $arrayCache = new ArrayCache();
-        $cachedClient = new CachedClient($currentClient, $arrayCache);
-
-        $this->browser->setClient($cachedClient);
-
-        for ($i = 1; $i <= 3; $i++) {
-            $this->translator->translate('This is a test', 'nl');
-        }
-
-        $this->assertLessThanOrEqual(2, $cachedClient->getMisses()); // at most one for the access token, one for the translation
-        $this->assertSame(2, $cachedClient->getHits());
-
-        $this->browser->setClient($currentClient);
-    }
-
     private function getEnvironmentVariable($name)
     {
         if (getenv($name) === false) {
