@@ -137,7 +137,7 @@ class MicrosoftTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $languageCodes = $this->translator->getLanguagesForTranslate();
 
-        $languageNames = $this->translator->getLanguageNames($languageCodes, 'nl');
+        $languageNames = $this->translator->getLanguageNames([], 'nl');
 
         foreach ($languageCodes as $languageCode) {
             $this->assertArrayHasKey($languageCode, $languageNames);

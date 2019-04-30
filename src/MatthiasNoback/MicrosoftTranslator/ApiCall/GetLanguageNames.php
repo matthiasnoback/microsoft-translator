@@ -22,9 +22,11 @@ class GetLanguageNames extends AbstractGetLanguages
 
     public function parseResponse($response)
     {
-        return $response;
-        $languageNames = self::getArrayOfStringsFromXml($response);
-
-        return array_combine($this->languageCodes, $languageNames);
+        $languages = parent::parseResponse($response);
+        $result = [];
+        foreach ($languages as $key => $values) {
+            $result[$key] = $values['name'];
+        }
+        return $result;
     }
 }

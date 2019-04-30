@@ -125,7 +125,6 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
         $languageCodes = $this->translator->getLanguagesForTranslate();
         $this->assertInternalType('array', $languageCodes);
         $this->assertTrue(count($languageCodes) > 30);
-
         return $languageCodes;
     }
 
@@ -133,7 +132,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $languageCodes = $this->translator->getLanguagesForTranslate();
 
-        $languageNames = $this->translator->getLanguageNames($languageCodes, 'nl');
+        $languageNames = $this->translator->getLanguageNames([], 'nl');
 
         foreach ($languageCodes as $languageCode) {
             $this->assertArrayHasKey($languageCode, $languageNames);

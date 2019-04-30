@@ -177,6 +177,7 @@ class MicrosoftTranslator
                 'Content-Length: ' . mb_strlen(json_encode($content))
             );
         }
+        $headers = array_unique(array_merge($headers, $apiCall->getRequestHeaders()));
 
         try {
             $response = $this->browser->call($url, $method, $headers, json_encode($content));
