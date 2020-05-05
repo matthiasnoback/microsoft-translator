@@ -69,13 +69,13 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $translatedTexts = $this->translator->translateArray(array(
             'This is a test',
-            'My name is Matthias',
+            'My name is Matthias.',
             'You are naïve!',
         ), 'nl', 'en');
 
         $this->assertSame(array(
             'Dit is een test',
-            'Mijn naam is Matthias',
+            'Mijn naam is Matthias.',
             'Je bent naïef!',
         ), $translatedTexts);
     }
@@ -92,12 +92,12 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     {
         $texts = array(
             'This is a test',
-            'Dit is een test',
+            'Esto es una prueba',
         );
 
         $detectedLanguages = $this->translator->detectArray($texts);
 
-        $this->assertSame(array('en', 'nl'), $detectedLanguages);
+        $this->assertSame(array('en', 'es'), $detectedLanguages);
     }
 
     public function testBreakSentences()
