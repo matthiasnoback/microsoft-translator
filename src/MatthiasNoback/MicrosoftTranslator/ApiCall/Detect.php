@@ -36,6 +36,7 @@ class Detect extends AbstractMicrosoftTranslatorApiCall
 
     public function getQueryParameters()
     {
+        return [];
     }
 
     public function parseResponse($response)

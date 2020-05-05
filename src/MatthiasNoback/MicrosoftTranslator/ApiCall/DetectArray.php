@@ -46,6 +46,7 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
 
     public function getQueryParameters()
     {
+        return [];
     }
 
     public function parseResponse($response)
