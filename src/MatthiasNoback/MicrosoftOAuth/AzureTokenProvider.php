@@ -8,7 +8,11 @@ use MatthiasNoback\Exception\InvalidResponseException;
 
 class AzureTokenProvider implements AccessTokenProviderInterface
 {
-    const AUTH_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
+
+	/**
+	 * @var string The auth url
+	 */
+	private $auth_url = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
 
     /**
      * @var \Buzz\Browser
@@ -25,19 +29,24 @@ class AzureTokenProvider implements AccessTokenProviderInterface
      */
     private $accessTokenCache;
 
-    /**
-     * The AccessTokenProvider requires a Buzz browser instance, and both a client id
-     * and a client secret. You can obtain these by registering your application
-     * at https://datamarket.azure.com/developer/applications
-     *
-     * @param \Buzz\Browser $browser The browser to use for fetching access tokens
-     * @param string $azureKey       The azure key for Translator service
-     */
-    public function __construct(Browser $browser, $azureKey)
-    {
-        $this->browser = $browser;
-        $this->azureKey = $azureKey;
-    }
+	/**
+	 * The AccessTokenProvider requires a Buzz browser instance, and both a client id
+	 * and a client secret. You can obtain these by registering your application
+	 * at https://datamarket.azure.com/developer/applications
+	 *
+	 * @param \Buzz\Browser $browser The browser to use for fetching access tokens
+	 * @param string $azureKey       The azure key for Translator service
+	 * @param string|null $authUrl       The custom uth url
+	 */
+	public function __construct(Browser $browser, $azureKey, ?string $authUrl = null)
+	{
+		$this->browser = $browser;
+		$this->azureKey = $azureKey;
+		if(!empty($authUrl))
+		{
+			$this->auth_url = $authUrl;
+		}
+	}
 
     public function setCache(AccessTokenCacheInterface $accessTokenCache)
     {
@@ -63,7 +72,7 @@ class AzureTokenProvider implements AccessTokenProviderInterface
     {
         try {
             $response = $this->browser->post(
-                self::AUTH_URL . "?Subscription-Key=" . urlencode($this->azureKey),
+                $this->auth_url . "?Subscription-Key=" . urlencode($this->azureKey),
                 array('Content-Length' => 0)
             );
         }
