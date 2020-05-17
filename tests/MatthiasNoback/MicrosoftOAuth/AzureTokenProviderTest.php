@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\MicrosoftOAuth;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
 
-class AzuresTokenProviderTest extends \PHPUnit_Framework_TestCase
+class AzuresTokenProviderTest extends TestCase
 {
     public function testGetTokenWithoutCache()
     {
@@ -139,7 +140,7 @@ class AzuresTokenProviderTest extends \PHPUnit_Framework_TestCase
 
     private function createMockResponse($content)
     {
-        $response = $this->getMock('Buzz\Message\Response');
+        $response = $this->getMockBuilder('Buzz\Message\Response')->getMock();
         $response
             ->expects($this->any())
             ->method('getContent')
@@ -155,6 +156,6 @@ class AzuresTokenProviderTest extends \PHPUnit_Framework_TestCase
 
     private function createMockAccessTokenCache()
     {
-        return $this->getMock('MatthiasNoback\MicrosoftOAuth\AccessTokenCacheInterface');
+        return $this->getMockBuilder('MatthiasNoback\MicrosoftOAuth\AccessTokenCacheInterface')->getMock();
     }
 }

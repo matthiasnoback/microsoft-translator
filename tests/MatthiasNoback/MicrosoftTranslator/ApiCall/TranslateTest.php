@@ -2,15 +2,16 @@
 
 namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-class TranslateTest extends \PHPUnit_Framework_TestCase
+class TranslateTest extends TestCase
 {
     public function testValidatesLengthOfText()
     {
         $text = str_repeat('t', 10001);
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException('\InvalidArgumentException');
 
         new ApiCall\Translate($text, 'nl');
     }

@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\Buzz\Client;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\Buzz\Client\CachedClient;
 
-class CachedClientTest extends \PHPUnit_Framework_TestCase
+class CachedClientTest extends TestCase
 {
     public function testCacheMiss()
     {
@@ -107,17 +108,17 @@ class CachedClientTest extends \PHPUnit_Framework_TestCase
 
     private function createMockCache()
     {
-        return $this->getMock('Doctrine\\Common\\Cache\\Cache');
+        return $this->getMockBuilder('Doctrine\\Common\\Cache\\Cache')->getMock();
     }
 
     private function createMockClient()
     {
-        return $this->getMock('Buzz\\Client\\ClientInterface');
+        return $this->getMockBuilder('Buzz\\Client\\ClientInterface')->getMock();
     }
 
     private function createMockRequest(array $headers = array())
     {
-        $request = $this->getMock('Buzz\\Message\\RequestInterface');
+        $request = $this->getMockBuilder('Buzz\\Message\\RequestInterface')->getMock();
         $request
             ->expects($this->once())
             ->method('getHeaders')
@@ -128,6 +129,6 @@ class CachedClientTest extends \PHPUnit_Framework_TestCase
 
     private function createMockResponse()
     {
-        return $this->getMock('Buzz\Message\Response');
+        return $this->getMockBuilder('Buzz\Message\Response')->getMock();
     }
 }

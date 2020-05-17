@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-class DetectTest extends \PHPUnit_Framework_TestCase
+class DetectTest extends TestCase
 {
     public function testGetCallToApiMethodDetectWithNoQueryParameters()
     {

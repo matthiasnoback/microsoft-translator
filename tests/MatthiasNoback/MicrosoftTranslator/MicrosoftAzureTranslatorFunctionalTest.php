@@ -2,6 +2,8 @@
 
 namespace MatthiasNoback\Tests\MicrosoftTranslator;
 
+use PHPUnit\Framework\TestCase;
+
 use Buzz\Browser;
 use Buzz\Client\Curl;
 use Doctrine\Common\Cache\ArrayCache;
@@ -12,7 +14,7 @@ use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 use MatthiasNoback\MicrosoftTranslator\ApiCall\Translate;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 
-class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
+class MicrosoftAzureTranslatorFunctionalTest extends TestCase
 {
     /**
      * @var MicrosoftTranslator
@@ -24,7 +26,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
      */
     private $browser;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $client = new Curl();
         $client->setTimeout(30);
@@ -116,7 +118,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends \PHPUnit_Framework_TestCase
     public function testGetLanguagesForTranslate()
     {
         $languageCodes = $this->translator->getLanguagesForTranslate();
-        $this->assertInternalType('array', $languageCodes);
+        $this->assertIsArray($languageCodes);
         $this->assertTrue(count($languageCodes) > 30);
         return $languageCodes;
     }

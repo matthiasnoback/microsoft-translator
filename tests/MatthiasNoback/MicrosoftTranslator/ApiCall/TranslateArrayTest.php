@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-class TranslateArrayTest extends \PHPUnit_Framework_TestCase
+class TranslateArrayTest extends TestCase
 {
     public function testPostRequestMethod()
     {
@@ -35,7 +36,7 @@ class TranslateArrayTest extends \PHPUnit_Framework_TestCase
     {
         $texts = range(1, 2001);
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException('\InvalidArgumentException');
 
         new ApiCall\TranslateArray($texts, 'nl');
     }
@@ -47,7 +48,7 @@ class TranslateArrayTest extends \PHPUnit_Framework_TestCase
             $texts[] = str_repeat('t', 1000);
         }
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->expectException('\InvalidArgumentException');
 
         new ApiCall\TranslateArray($texts, 'nl');
     }

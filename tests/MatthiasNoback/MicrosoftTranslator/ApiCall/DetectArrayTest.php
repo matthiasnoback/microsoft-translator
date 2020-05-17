@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-class DetectArrayTest extends \PHPUnit_Framework_TestCase
+class DetectArrayTest extends TestCase
 {
     public function testPostCallToApiMethodDetectArrayWithNoQueryParameters()
     {

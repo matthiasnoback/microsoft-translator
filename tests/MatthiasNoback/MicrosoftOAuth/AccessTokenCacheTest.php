@@ -2,9 +2,10 @@
 
 namespace MatthiasNoback\Tests\MicrosoftOAuth;
 
+use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
 
-class AccessTokenCacheTest extends \PHPUnit_Framework_TestCase
+class AccessTokenCacheTest extends TestCase
 {
     public function testSetAccessToken()
     {
@@ -69,6 +70,6 @@ class AccessTokenCacheTest extends \PHPUnit_Framework_TestCase
 
     private function createMockCache()
     {
-        return $this->getMock('Doctrine\Common\Cache\Cache');
+        return $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
     }
 }
