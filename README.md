@@ -2,7 +2,7 @@
 
 By Matthias Noback (maintained by Alayn Gortazar)
 
-[![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator) [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/badges/quality-score.png?s=a3230ce4a66715d3a62793da48ba24d8a30ab85d)](https://scrutinizer-ci.com/g/matthiasnoback/microsoft-translator/) [![Dependency Status](https://www.versioneye.com/user/projects/57682da5fdabcd003c031381/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57682da5fdabcd003c031381)
+[![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator) 
 
 ## Installation
 
