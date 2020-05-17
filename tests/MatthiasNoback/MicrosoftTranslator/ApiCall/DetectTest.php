@@ -13,7 +13,7 @@ class DetectTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('POST', $apiCall->getHttpMethod());
         $this->assertSame('detect', $apiCall->getApiMethodName());
-        $this->assertSame(null, $apiCall->getQueryParameters());
+        $this->assertSame([], $apiCall->getQueryParameters());
     }
 
     public function testArrayOfTextAsRequestContent()
