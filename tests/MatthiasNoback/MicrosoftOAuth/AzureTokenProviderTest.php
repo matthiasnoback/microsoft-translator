@@ -31,6 +31,32 @@ class AzuresTokenProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($accessToken, $actualAccessToken);
     }
 
+    public function testGetTokenWithCustomUrl()
+    {
+        $azureKey = 'azureKey';
+        $accessToken = 'accessToken';
+        $scope = 'theScope';
+        $grantType = 'theGrantType';
+        $customUrl = 'https://westus.api.cognitive.microsoft.com/sts/v1.0/issueToken';
+
+        $response = $this->createMockResponse($accessToken);
+
+        $browser = $this->createMockBrowser();
+        $browser
+            ->expects($this->once())
+            ->method('post')
+            ->with(
+                $customUrl . '?Subscription-Key=' . $azureKey,
+                array('Content-Length' => 0)
+            )
+            ->will($this->returnValue($response));
+        $accessTokenProvider = new AzureTokenProvider($browser, $azureKey, $customUrl);
+
+        $actualAccessToken = $accessTokenProvider->getAccessToken($scope, $grantType);
+
+        $this->assertSame($accessToken, $actualAccessToken);
+    }
+
     public function testGetTokenWithCacheMiss()
     {
         $scope = 'theScope';

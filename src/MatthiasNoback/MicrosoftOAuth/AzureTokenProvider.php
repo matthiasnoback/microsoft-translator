@@ -38,7 +38,7 @@ class AzureTokenProvider implements AccessTokenProviderInterface
 	 * @param string $azureKey       The azure key for Translator service
 	 * @param string|null $authUrl       The custom uth url
 	 */
-	public function __construct(Browser $browser, $azureKey, ?string $authUrl = null)
+	public function __construct(Browser $browser, $azureKey, $authUrl = null)
 	{
 		$this->browser = $browser;
 		$this->azureKey = $azureKey;
