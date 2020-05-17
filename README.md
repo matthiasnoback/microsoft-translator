@@ -39,36 +39,17 @@ $accessTokenProvider = new AzureTokenProvider($browser, $azureKey);
 
 $translator = new MicrosoftTranslator($browser, $accessTokenProvider);
 ```
+### Selecting azure token provider url
 
-## Differences with V2 library
- * Removed speak method: Speak API has been removed from the Microsoft Translator Text API on v3.0.
- * Removed getTranslations method: GetTranslations functionality has been removed from the Microsoft Translator Text API on v3.0.
-
-## Azure DataMarket token usage [deprecated]
-
- ** This has not been tested on V3 API, so it may be failing **
-
-You need to register your application at the [Azure DataMarket](https://datamarket.azure.com/developer/applications) and
-thereby retrieve a "client id" and a "client secret". These can be used to instantiate the ``AccessTokenProvider`` (deprecated) on which
-the ``MicrosoftTranslator`` depends:
+By default the acesstoken will be retrieved from https://api.cognitive.microsoft.com/sts/v1.0/issueToken , a third parameter can be passed to the AzureTokenProvider to choose another source.
 
 ```php
 <?php
+// Some code
 
-use Buzz\Browser;
-use MatthiasNoback\MicrosoftOAuth\AccessTokenProvider;
-use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
+$accessTokenProvider = new AzureTokenProvider($browser, $azureKey, 'https://westus.api.cognitive.microsoft.com/sts/v1.0/issueToken');
 
-$browser = new Browser();
-
-$clientId = '[YOUR-CLIENT-ID]';
-$clientSecret = '[YOUR-CLIENT-SECRET]';
-
-$accessTokenProvider = new AccessTokenProvider($browser, $clientId, $clientSecret);
-
-$translator = new MicrosoftTranslator($browser, $accessTokenProvider);
 ```
-
 
 ### Optional: enable the access token cache
 
@@ -93,6 +74,9 @@ The actual cache provider can be anything, as long as it implements the ``Cache`
 ### Translate a string
 
 ```php
+<?php
+// Some code
+
 $translatedString = $translator->translate('This is a test', 'nl', 'en');
 
 // $translatedString will be 'Dit is een test', which is Dutch for...
@@ -101,6 +85,9 @@ $translatedString = $translator->translate('This is a test', 'nl', 'en');
 ### Translate a string and get multiple translations
 
 ```php
+<?php
+// Some code
+
 $matches = $translator->getTranslations('This is a test', 'nl', 'en');
 
 foreach ($matches as $match) {
@@ -113,6 +100,9 @@ foreach ($matches as $match) {
 ### Detect the language of a string
 
 ```php
+<?php
+// Some code
+
 $text = 'This is a test';
 
 $detectedLanguage = $translator->detect($text);
@@ -134,6 +124,11 @@ values with their real values (i.e. client id, client secret and a location for 
 There is a [MicrosoftTranslatorBundle](https://github.com/matthiasnoback/MicrosoftTranslatorBundle) which makes the Microsoft translator available in a Symfony2 project.
 
 There is also a [MicrosoftTranslatorServiceProvider](https://github.com/matthiasnoback/MicrosoftTranslatorServiceProvider) which registers the Microsoft translator and related services to a Silex application.
+
+## Differences with V2 library
+ * Removed speak method: Speak API has been removed from the Microsoft Translator Text API on v3.0.
+ * Removed getTranslations method: GetTranslations functionality has been removed from the Microsoft Translator Text API on v3.0.
+ * Removed Datamarket token compatibility: Azure datamarket is not longer available so this has been removed from v3.x
 
 ## TODO
 
