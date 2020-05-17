@@ -10,7 +10,6 @@ before_script: composer install --dev
 matrix:
   allow_failures:
     - env: DOCTRINE_VERSION=dev-master
-    - php: hhvm
 
 env:
   - DOCTRINE_VERSION=2.2.*
