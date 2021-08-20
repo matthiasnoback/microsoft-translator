@@ -140,6 +140,27 @@ class MicrosoftTranslator
     }
 
     /**
+     * Look up a text in dictionary
+     *
+     * @param string $text
+     * @param string $to
+     * @param string|null $from
+     * @param string $contentType
+     * @param string|null $category
+     * @return string
+     */
+    public function dictionaryLookup(
+        $text,
+        $to,
+        $from = null
+    )
+    {
+        $apiCall = new ApiCall\DictionaryLookup($text, $to, $from);
+
+        return $this->call($apiCall);
+    }
+
+    /**
      * @param \MatthiasNoback\MicrosoftTranslator\ApiCall\ApiCallInterface $apiCall
      * @return mixed
      */
