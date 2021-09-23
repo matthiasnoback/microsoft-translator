@@ -83,7 +83,7 @@ class AzureTokenProvider implements AccessTokenProviderInterface
             ), null, $previous);
         }
 
-        if (!$response->isSuccessful()) {
+        if ($response->getStatusCode() !== 200) {
             throw new RequestFailedException(sprintf(
                 'Call to Auth server failed, %d: %s',
                 $response->getStatusCode(),
@@ -91,7 +91,6 @@ class AzureTokenProvider implements AccessTokenProviderInterface
             ));
         }
 
-        /* @var $response \Buzz\Message\Response */
-        return $response->getContent();
+        return $response->getBody()->getContents();
     }
 }

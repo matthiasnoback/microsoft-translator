@@ -151,14 +151,14 @@ class MicrosoftTranslator
         $headers = [];
         if ($apiCall->sendHeaders()) {
             $headers = array(
-                'Authorization: Bearer '.$this->getAccessToken(),
-                'Content-Type: application/json',
-                'Content-Length: ' . mb_strlen(json_encode($content))
+                'Authorization' =>  'Bearer '.$this->getAccessToken(),
+                'Content-Type' =>  'application/json',
+                'Content-Length' =>  mb_strlen(json_encode($content))
             );
         }
         $headers = array_unique(array_merge($headers, $apiCall->getRequestHeaders()));
         try {
-            $response = $this->browser->call($url, $method, $headers, json_encode($content));
+            $response = $this->browser->request($method, $url, $headers, json_encode($content));
         }
         catch (\Exception $previous) {
             throw new RequestFailedException(sprintf(
@@ -167,7 +167,7 @@ class MicrosoftTranslator
             ), null, $previous);
         }
 
-        if (!$response->isSuccessful()) {
+        if ($response->getStatusCode() !== 200) {
             throw new RequestFailedException(sprintf(
                 'API call was not successful, %d: %s',
                 $response->getStatusCode(),
@@ -177,7 +177,7 @@ class MicrosoftTranslator
 
         /* @var $response \Buzz\Message\Response */
 
-        $responseContent = $response->getContent();
+        $responseContent = $response->getBody()->getContents();
 
         return $apiCall->parseResponse($responseContent);
     }

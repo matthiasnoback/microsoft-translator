@@ -4,6 +4,8 @@ namespace MatthiasNoback\Tests\MicrosoftOAuth;
 
 use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class AzuresTokenProviderTest extends TestCase
 {
@@ -140,16 +142,23 @@ class AzuresTokenProviderTest extends TestCase
 
     private function createMockResponse($content)
     {
-        $response = $this->getMockBuilder('Buzz\Message\Response')->getMock();
-        $response
+        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $body = $this->getMockBuilder(StreamInterface::class)->getMock();
+
+        $body
             ->expects($this->any())
-            ->method('getContent')
+            ->method('getContents')
             ->will($this->returnValue($content));
 
         $response
             ->expects($this->any())
-            ->method('isSuccessful')
-            ->will($this->returnValue(true));
+            ->method('getBody')
+            ->will($this->returnValue($body));
+
+        $response
+            ->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
 
         return $response;
     }

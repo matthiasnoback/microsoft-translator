@@ -13,6 +13,7 @@ use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
 use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 use MatthiasNoback\MicrosoftTranslator\ApiCall\Translate;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
 class MicrosoftAzureTranslatorFunctionalTest extends TestCase
 {
@@ -28,9 +29,8 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
 
     protected function setUp(): void
     {
-        $client = new Curl();
-        $client->setTimeout(30);
-        $this->browser = new Browser($client);
+        $client = new Curl(new Psr17Factory());
+        $this->browser = new Browser($client, new Psr17Factory());
 
         $azureKey = $this->getEnvironmentVariable('MICROSOFT_AZURE_KEY');
         $cache = new ArrayCache();
@@ -78,7 +78,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
         $this->assertSame(array(
             'Dit is een test',
             'Mijn naam is Matthias.',
-            'Je bent naïef!',
+            'Je bent naïef.',
         ), $translatedTexts);
     }
 

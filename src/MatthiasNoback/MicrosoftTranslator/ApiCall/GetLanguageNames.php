@@ -16,7 +16,7 @@ class GetLanguageNames extends AbstractGetLanguages
     public function getRequestHeaders()
     {
         return [
-            'Accept-Language: ' . $this->locale
+            'Accept-Language' => $this->locale
         ];
     }
 
