@@ -2,7 +2,7 @@
 
 By Matthias Noback (maintained by Alayn Gortazar)
 
-[![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator) 
+[![Build Status](https://travis-ci.org/matthiasnoback/microsoft-translator.png?branch=master)](https://travis-ci.org/matthiasnoback/microsoft-translator)
 
 ## Installation
 
@@ -27,11 +27,16 @@ You need to [obtain a Microsoft Azure Cognitive Services subscription Key](http:
 ```php
 <?php
 
-use Buzz\Browser;
 use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 
-$browser = new Browser();
+use Buzz\Browser;
+use Buzz\Client\Curl;
+use Nyholm\Psr7\Factory\Psr17Factory;
+
+
+$client = new Curl(new Psr17Factory());
+$browser = new Browser($client, new Psr17Factory());
 
 $azureKey = '[YOUR-AZURE-SUBSCRIPTION-KEY]';
 
@@ -60,14 +65,14 @@ cached for 10 minutes, so you should also use the built-in ``AccessTokenCache``:
 <?php
 
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
-use Doctrine\Common\Cache\ArrayCache;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 
-$cache = new ArrayCache();
+$cache = new ArrayCachePool();
 $accessTokenCache = new AccessTokenCache($cache);
 $accessTokenProvider->setCache($accessTokenCache);
 ```
 
-The actual cache provider can be anything, as long as it implements the ``Cache`` interface from the Doctrine Common library.
+The actual cache provider can be anything, as long as it implements the ``CachePoolInterface`` interface from FIG-PSR6
 
 ## Making calls
 
@@ -131,6 +136,4 @@ There is also a [MicrosoftTranslatorServiceProvider](https://github.com/matthias
  * Removed Datamarket token compatibility: Azure datamarket is not longer available so this has been removed from v3.x
 
 ## TODO
-
- * Make CachedClient work (now bypasses any SendRequest call)
- * There are some more calls to be implemented, and also some more tests to be added.
+* There are some more calls to be implemented, and also some more tests to be added.
