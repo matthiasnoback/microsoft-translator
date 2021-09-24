@@ -9,7 +9,6 @@ use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class CachedClientTest extends TestCase
 {
@@ -55,8 +54,7 @@ class CachedClientTest extends TestCase
             ->with($this->isInstanceOf(CacheItemInterface::class));
 
         $cachedClient = new CachedClient($client, $cache);
-
-        $cachedResponse = $cachedClient->sendRequest($request);
+        $cachedClient->sendRequest($request);
 
         $this->assertSame(1, $cachedClient->getMisses());
         $this->assertSame(0, $cachedClient->getHits());
@@ -128,21 +126,11 @@ class CachedClientTest extends TestCase
     private function createMockRequest()
     {
         $request = $this->getMockBuilder(RequestInterface::class)->getMock();
-        // $request
-        //     ->expects($this->once())
-        //     ->method('getHeaders')
-        //     ->will($this->returnValue($headers));
-
         return $request;
     }
 
     private function createMockResponse()
     {
         return $this->getMockBuilder(ResponseInterface::class)->getMock();
-    }
-
-    private function createMockStream()
-    {
-        return $this->getMockBuilder(StreamInterface::class)->getMock();
     }
 }
