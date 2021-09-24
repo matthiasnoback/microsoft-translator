@@ -145,8 +145,6 @@ class MicrosoftTranslator
      * @param string $text
      * @param string $to
      * @param string|null $from
-     * @param string $contentType
-     * @param string|null $category
      * @return string
      */
     public function dictionaryLookup(

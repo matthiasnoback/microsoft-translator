@@ -24,7 +24,7 @@ class DictionaryLookup extends AbstractMicrosoftTranslatorApiCall
 
     public function getApiMethodName()
     {
-        return '/dictionary/lookup';
+        return 'dictionary/lookup';
     }
 
     public function getHttpMethod()

@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <coverage>
+        <include>
+            <directory>./</directory>
+        </include>
+        <exclude>
+            <directory suffix="Interface.php">./</directory>
+            <directory>./Resources</directory>
+            <directory>./tests</directory>
+            <directory>./vendor</directory>
+        </exclude>
+    </coverage>
     <testsuites>
         <testsuite name="microsoft-translator test suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./Resources</directory>
-                <directory>./tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
     <!--
     <php>
         <env name="MICROSOFT_AZURE_KEY" value="www"></env>
-        <env name="MICROSOFT_OAUTH_CLIENT_ID" value="xxx"></env>
-        <env name="MICROSOFT_OAUTH_CLIENT_SECRET" value="yyy"></env>
-        <env name="MICROSOFT_TRANSLATOR_SAVE_AUDIO_TO" value="./" />
     </php>
     -->
 </phpunit>

@@ -140,4 +140,17 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
 
         return getenv($name);
     }
+
+    public function testDictionaryLookup()
+    {
+        $translated = $this->translator->dictionaryLookup('fly', 'es', 'en');
+
+        $this->assertGreaterThanOrEqual(2, $translated);
+        $this->assertSame('volar', $translated[0]['normalizedTarget']);
+        $this->assertSame('volar', $translated[0]['displayTarget']);
+        $this->assertSame('VERB', $translated[0]['posTag']);
+        $this->assertGreaterThanOrEqual(2, $translated[0]['backTranslations']);
+    }
+
+
 }
