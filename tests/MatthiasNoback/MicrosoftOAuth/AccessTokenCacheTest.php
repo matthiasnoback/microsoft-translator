@@ -4,6 +4,8 @@ namespace MatthiasNoback\Tests\MicrosoftOAuth;
 
 use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 class AccessTokenCacheTest extends TestCase
 {
@@ -13,13 +15,23 @@ class AccessTokenCacheTest extends TestCase
         $usedCacheKey = null;
         $lifetime = 600;
 
+        $cacheItem = $this->createMockCacheItem();
+        $cacheItem->expects($this->once())
+            ->method('getKey')
+            ->will($this->returnValue('itemKey'));
+
         $cache = $this->createMockCache();
         $cache
             ->expects($this->once())
+            ->method('getItem')
+            ->will($this->returnValue($cacheItem));
+
+        $cache
+            ->expects($this->once())
             ->method('save')
-            ->with($this->isType('string'), $accessToken, $lifetime)
-            ->will($this->returnValue(function($cacheKey) use (&$usedCacheKey) {
-                $usedCacheKey = $cacheKey;
+            ->with($cacheItem)
+            ->will($this->returnCallback(function($cacheItem) use (&$usedCacheKey) {
+                $usedCacheKey = $cacheItem->getKey();
 
                 return true;
             }));
@@ -36,7 +48,7 @@ class AccessTokenCacheTest extends TestCase
         $cache = $this->createMockCache();
         $cache
             ->expects($this->once())
-            ->method('contains')
+            ->method('hasItem')
             ->will($this->returnValue(true));
 
         $accessTokenCache = new AccessTokenCache($cache);
@@ -51,11 +63,19 @@ class AccessTokenCacheTest extends TestCase
     {
         $accessToken = 'theAccessToken';
 
+        $cacheItem = $this->createMockCacheItem();
+
+        $cacheItem
+            ->expects($this->once())
+            ->method('get')
+            ->will($this->returnValue($accessToken));
+
         $cache = $this->createMockCache();
         $cache
             ->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnValue($accessToken));
+            ->method('getItem')
+            ->will($this->returnValue($cacheItem));
+
 
 
         $accessTokenCache = new AccessTokenCache($cache);
@@ -70,6 +90,11 @@ class AccessTokenCacheTest extends TestCase
 
     private function createMockCache()
     {
-        return $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
+        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+    }
+
+    private function createMockCacheItem()
+    {
+        return $this->getMockBuilder(CacheItemInterface::class)->getMock();
     }
 }

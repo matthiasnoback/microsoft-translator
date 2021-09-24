@@ -6,11 +6,9 @@ use PHPUnit\Framework\TestCase;
 
 use Buzz\Browser;
 use Buzz\Client\Curl;
-use Doctrine\Common\Cache\ArrayCache;
-use MatthiasNoback\Buzz\Client\CachedClient;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use MatthiasNoback\MicrosoftOAuth\AccessTokenCache;
 use MatthiasNoback\MicrosoftOAuth\AzureTokenProvider;
-use MatthiasNoback\MicrosoftTranslator\ApiCall\Response\TranslationMatch;
 use MatthiasNoback\MicrosoftTranslator\ApiCall\Translate;
 use MatthiasNoback\MicrosoftTranslator\MicrosoftTranslator;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -33,7 +31,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
         $this->browser = new Browser($client, new Psr17Factory());
 
         $azureKey = $this->getEnvironmentVariable('MICROSOFT_AZURE_KEY');
-        $cache = new ArrayCache();
+        $cache = new ArrayCachePool();
         $accessTokenCache = new AccessTokenCache($cache);
         $accessTokenProvider = new AzureTokenProvider($this->browser, $azureKey);
         $accessTokenProvider->setCache($accessTokenCache);

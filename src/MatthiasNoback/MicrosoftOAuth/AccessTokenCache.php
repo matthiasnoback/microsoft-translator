@@ -2,7 +2,7 @@
 
 namespace MatthiasNoback\MicrosoftOAuth;
 
-use Doctrine\Common\Cache\Cache;
+use Psr\Cache\CacheItemPoolInterface;
 
 class AccessTokenCache implements AccessTokenCacheInterface
 {
@@ -15,10 +15,10 @@ class AccessTokenCache implements AccessTokenCacheInterface
      * minutes, but for safety's sake, let's assume a lifetime of 9
      * minutes.
      *
-     * @param \Doctrine\Common\Cache\Cache $cache
+     * @param CacheItemPoolInterface $cache
      * @param int $lifetime
      */
-    public function __construct(Cache $cache, $lifetime = 540)
+    public function __construct(CacheItemPoolInterface $cache, $lifetime = 540)
     {
         $this->cache = $cache;
         $this->lifetime = $lifetime;
@@ -28,21 +28,25 @@ class AccessTokenCache implements AccessTokenCacheInterface
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
-        return $this->cache->fetch($cacheKey);
+        return $this->cache->getItem($cacheKey)->get();
     }
 
     public function has($scope, $grantType)
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
-        return $this->cache->contains($cacheKey);
+        return $this->cache->hasItem($cacheKey);
     }
 
     public function set($scope, $grantType, $accessToken)
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
-        return $this->cache->save($cacheKey, $accessToken, $this->lifetime);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        $cacheItem->set($accessToken);
+        $cacheItem->expiresAfter($this->lifetime);
+
+        return $this->cache->save($cacheItem);
     }
 
     private function generateCacheKey($scope, $grantType)
