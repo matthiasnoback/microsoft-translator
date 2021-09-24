@@ -27,8 +27,8 @@ class CachedClient implements BuzzClientInterface
     private $misses = 0;
 
     /**
+     * @param BuzzClientInterface          $client        Client to use for making HTTP requests
      * @param CacheItemPoolInterface       $cache         Cache for storing responses
-     * @param \Buzz\Client\ClientInterface $client        Client to use for making HTTP requests
      * @param array                        $ignoreHeaders Headers to be ignored when determing request variance
      */
     public function __construct(BuzzClientInterface $client, CacheItemPoolInterface $cache, $lifetime = 0, array $ignoreHeaders = array())
@@ -40,11 +40,10 @@ class CachedClient implements BuzzClientInterface
     }
 
     /**
-     * Populates the supplied response with the response for the supplied request.
+     * Returns response for the supplied request.
      *
      * @param RequestInterface $request  A request object
      * @param array            $options  BuzzClientInterface request options
-     * @param MessageInterface $response A response object
      */
     public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
     {
@@ -115,7 +114,7 @@ class CachedClient implements BuzzClientInterface
      * Remove ignored headers from request object
      *
      * @param RequestInterface $request
-     * @return mixed
+     * @return RequestInterface
      */
     private function getNormalizedRequest(RequestInterface $request): RequestInterface
     {

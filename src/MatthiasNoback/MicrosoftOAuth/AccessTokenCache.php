@@ -24,21 +24,21 @@ class AccessTokenCache implements AccessTokenCacheInterface
         $this->lifetime = $lifetime;
     }
 
-    public function get($scope, $grantType)
+    public function get(string $scope, string $grantType): string
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
         return $this->cache->getItem($cacheKey)->get();
     }
 
-    public function has($scope, $grantType)
+    public function has(string $scope, string $grantType): bool
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
         return $this->cache->hasItem($cacheKey);
     }
 
-    public function set($scope, $grantType, $accessToken)
+    public function set(string $scope, string $grantType, string $accessToken): bool
     {
         $cacheKey = $this->generateCacheKey($scope, $grantType);
 
@@ -49,7 +49,7 @@ class AccessTokenCache implements AccessTokenCacheInterface
         return $this->cache->save($cacheItem);
     }
 
-    private function generateCacheKey($scope, $grantType)
+    private function generateCacheKey(string $scope, string $grantType): string
     {
         return md5($scope.'_'.$grantType);
     }

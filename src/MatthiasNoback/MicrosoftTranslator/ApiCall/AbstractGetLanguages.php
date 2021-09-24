@@ -16,6 +16,7 @@ abstract class AbstractGetLanguages extends AbstractMicrosoftTranslatorApiCall
 
     public function getRequestContent()
     {
+        return null;
     }
 
     public function getQueryParameters()

@@ -24,7 +24,7 @@ interface ApiCallInterface
      * The content of the request to be sent, or null
      *
      * @abstract
-     * @return string|null
+     * @return string|array|null
      */
     public function getRequestContent();
 
@@ -42,7 +42,7 @@ interface ApiCallInterface
      * Transform the response into something useful
      *
      * @abstract
-     * @param $response
+     * @param string $response
      * @return mixed
      */
     public function parseResponse($response);
