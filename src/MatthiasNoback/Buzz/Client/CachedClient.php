@@ -2,11 +2,11 @@
 
 namespace MatthiasNoback\Buzz\Client;
 
-use Buzz\Client\ClientInterface;
-use Doctrine\Common\Cache\Cache;
-use Buzz\Message\RequestInterface;
-use Buzz\Message\MessageInterface;
-use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
+use Buzz\Client\BuzzClientInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
 
 /**
  * The CachedClient wraps an existing ClientInterface. It intercepts
@@ -17,7 +17,7 @@ use Psr\Http\Message\RequestInterface as Psr7RequestInterface;
  * - Headers are sorted alphabetically
  * - Some headers that don't contribute to the variance of a request are ignored.
  */
-class CachedClient implements ClientInterface
+class CachedClient implements BuzzClientInterface
 {
     private $client;
     private $cache;
@@ -27,16 +27,47 @@ class CachedClient implements ClientInterface
     private $misses = 0;
 
     /**
-     * @param \Doctrine\Common\Cache\Cache $cache         Cache for storing responses
+     * @param CacheItemPoolInterface       $cache         Cache for storing responses
      * @param \Buzz\Client\ClientInterface $client        Client to use for making HTTP requests
      * @param array                        $ignoreHeaders Headers to be ignored when determing request variance
      */
-    public function __construct(ClientInterface $client, Cache $cache, $lifetime = 0, array $ignoreHeaders = array())
+    public function __construct(BuzzClientInterface $client, CacheItemPoolInterface $cache, $lifetime = 0, array $ignoreHeaders = array())
     {
         $this->client = $client;
         $this->cache = $cache;
         $this->lifetime = $lifetime;
         $this->ignoreHeaders = $ignoreHeaders;
+    }
+
+    /**
+     * Populates the supplied response with the response for the supplied request.
+     *
+     * @param RequestInterface $request  A request object
+     * @param array            $options  BuzzClientInterface request options
+     * @param MessageInterface $response A response object
+     */
+    public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
+    {
+        $cacheKey = $this->generateCacheKeyForPsr7Request($request);
+
+        if ($this->cache->hasItem($cacheKey)) {
+            $this->hits++;
+
+            $cachedResponse = unserialize($this->cache->getItem($cacheKey)->get());
+            return $cachedResponse;
+        }
+
+        $cacheItem = $this->cache->getItem($cacheKey);
+
+        $this->misses++;
+
+        $response = $this->client->sendRequest($request, $options);
+
+        $cacheItem->set(serialize($response));
+        $cacheItem->expiresAfter($this->lifetime);
+        $this->cache->save($cacheItem);;
+
+        return $response;
     }
 
     public function ignoreHeader($header)
@@ -45,50 +76,12 @@ class CachedClient implements ClientInterface
     }
 
     /**
-     * Populates the supplied response with the response for the supplied request.
-     *
-     * @param RequestInterface $request  A request object
-     * @param MessageInterface $response A response object
-     */
-    public function send(RequestInterface $request, MessageInterface $response)
-    {
-        $cacheKey = $this->generateCacheKeyForRequest($request);
-
-        if ($this->cache->contains($cacheKey)) {
-            $this->hits++;
-
-            $cachedResponse = unserialize($this->cache->fetch($cacheKey));
-            /* @var $cachedResponse \Buzz\Message\Response */
-
-            $response->setContent($cachedResponse->getContent());
-            $response->setHeaders($cachedResponse->getHeaders());
-
-            return;
-        }
-
-        $this->misses++;
-
-        $this->client->send($request, $response);
-
-        $this->cache->save($cacheKey, serialize($response), $this->lifetime);
-    }
-
-    /**
-     * Populates the supplied response with the response for the supplied request.
-     *
-     * @param Psr7RequestInterface $request  A request object
-     */
-    public function sendRequest(Psr7RequestInterface $request)
-    {
-        return $this->client->sendRequest($request);
-    }
-    /**
      * Get the number of times the cache already contained a response, and thus,
      * no real HTTP request made
      *
      * @return int
      */
-    public function getHits()
+    public function getHits(): int
     {
         return $this->hits;
     }
@@ -99,7 +92,7 @@ class CachedClient implements ClientInterface
      *
      * @return int
      */
-    public function getMisses()
+    public function getMisses(): int
     {
         return $this->misses;
     }
@@ -107,76 +100,35 @@ class CachedClient implements ClientInterface
     /**
      * Generate a unique key for the given request
      *
-     * The request is made invariant by sorting the headers alphabetically and by
-     * removing headers that are to be ignored.
-     *
      * @see CachedClient::__construct()
      *
-     * @param \Buzz\Message\RequestInterface $request
+     * @param RequestInterface $request
      * @return string
      */
-    private function generateCacheKeyForRequest(RequestInterface $request)
+    private function generateCacheKeyForPsr7Request(RequestInterface $request): string
     {
         $normalizedRequest = $this->getNormalizedRequest($request);
-
-        return md5($normalizedRequest->__toString());
+        return md5(serialize($normalizedRequest));
     }
 
     /**
-     * Generate a unique key for the given request
+     * Remove ignored headers from request object
      *
-     * The request is made invariant by sorting the headers alphabetically and by
-     * removing headers that are to be ignored.
-     *
-     * @see CachedClient::__construct()
-     *
-     * @param \Buzz\Message\RequestInterface $request
-     * @return string
+     * @param RequestInterface $request
+     * @return mixed
      */
-    private function generateCacheKeyForPsr7Request(Psr7RequestInterface $request)
-    {
-        // $normalizedRequest = $this->getNormalizedRequest($request);
-
-        return md5(serialize($request));
-    }
-
-    /**
-     * Reduces the request to its normal form
-     * Which means: strip all information that does not contribute to its uniqueness
-     * This will prevent cache misses, when effectively indifferent requests are made
-     *
-     * @param \Buzz\Message\RequestInterface $request
-     * @return \Buzz\Message\RequestInterface
-     */
-    private function getNormalizedRequest(RequestInterface $request)
+    private function getNormalizedRequest(RequestInterface $request): RequestInterface
     {
         $normalizedRequest = clone $request;
 
-        $headers = $request->getHeaders();
-        $normalizedHeaders = $this->normalizeHeaders($headers);
-        asort($normalizedHeaders);
-
-        $normalizedRequest->setHeaders($normalizedHeaders);
-
-        return $normalizedRequest;
-    }
-
-    /**
-     * Get only those headers that should not be ignored
-     *
-     * @param array $headers
-     * @return array
-     */
-    private function normalizeHeaders(array $headers)
-    {
         $ignoreHeaders = $this->ignoreHeaders;
 
         foreach ($ignoreHeaders as $ignoreHeader) {
-            $headers = array_filter($headers, function($header) use ($ignoreHeader) {
-                return stripos($header, $ignoreHeader.':') !== 0;
-            });
+            if ($normalizedRequest->hasHeader($ignoreHeader)) {
+                $normalizedRequest = $normalizedRequest->withoutHeader($ignoreHeader);
+            }
         }
 
-        return $headers;
+        return $normalizedRequest;
     }
 }

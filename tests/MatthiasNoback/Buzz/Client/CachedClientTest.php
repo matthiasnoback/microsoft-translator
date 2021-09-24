@@ -2,8 +2,14 @@
 
 namespace MatthiasNoback\Tests\Buzz\Client;
 
+use Buzz\Client\BuzzClientInterface;
 use PHPUnit\Framework\TestCase;
 use MatthiasNoback\Buzz\Client\CachedClient;
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class CachedClientTest extends TestCase
 {
@@ -17,7 +23,7 @@ class CachedClientTest extends TestCase
         // the cache will not contain a response for the current request
         $cache
             ->expects($this->once())
-            ->method('contains')
+            ->method('hasItem')
             ->will($this->returnCallback(function($id) use (&$cacheKey1) {
                 $cacheKey1 = $id;
 
@@ -28,21 +34,29 @@ class CachedClientTest extends TestCase
         // the client will be used to fetch the response
         $client
             ->expects($this->once())
-            ->method('send')
-            ->with($request, $response);
+            ->method('sendRequest')
+            ->with($request)
+            ->will($this->returnValue($response));
 
         // the serialized response will be stored in the cache
+        $cacheItem = $this->createMockCacheItem();
+        $cache
+            ->expects($this->once())
+            ->method('getItem')
+            ->with($this->isType('string'))
+            ->will($this->returnCallback(function($id) use (&$cacheKey2, $cacheItem) {
+                $cacheKey2 = $id;
+                return $cacheItem;
+            }));
+
         $cache
             ->expects($this->once())
             ->method('save')
-            ->with($this->isType('string'), serialize($response))
-            ->will($this->returnCallback(function($id) use (&$cacheKey2) {
-                $cacheKey2 = $id;
-            }));
+            ->with($this->isInstanceOf(CacheItemInterface::class));
 
         $cachedClient = new CachedClient($client, $cache);
 
-        $cachedClient->send($request, $response);
+        $cachedResponse = $cachedClient->sendRequest($request);
 
         $this->assertSame(1, $cachedClient->getMisses());
         $this->assertSame(0, $cachedClient->getHits());
@@ -53,13 +67,13 @@ class CachedClientTest extends TestCase
     {
         $request = $this->createMockRequest();
         $response = $this->createMockResponse();
-
         $cacheKey1 = $cacheKey2 = null;
         $cache = $this->createMockCache();
         // the cache contains a response for the current request
+
         $cache
             ->expects($this->once())
-            ->method('contains')
+            ->method('hasItem')
             ->will($this->returnCallback(function($id) use (&$cacheKey1) {
             $cacheKey1 = $id;
 
@@ -70,36 +84,26 @@ class CachedClientTest extends TestCase
         // the client should not be called
         $client
             ->expects($this->never())
-            ->method('send');
+            ->method('sendRequest');
 
-        $cachedResponse = new \Buzz\Message\Response();
-        $cachedHeaders = array('CachedHeader');
-        $cachedContent = 'Cached response';
-        $cachedResponse->setHeaders($cachedHeaders);
-        $cachedResponse->setContent($cachedContent);
+        $cacheItem = $this->createMockCacheItem();
+        $cacheItem
+            ->expects($this->once())
+            ->method('get')
+            ->will($this->returnValue(serialize($response)));
 
         // the serialized response will be retrieved from the cache
         $cache
             ->expects($this->once())
-            ->method('fetch')
-            ->will($this->returnCallback(function($id) use (&$cacheKey2, $cachedResponse) {
+            ->method('getItem')
+            ->will($this->returnCallback(function($id) use (&$cacheKey2, $cacheItem) {
             $cacheKey2 = $id;
 
-            return serialize($cachedResponse);
+            return $cacheItem;
         }));
 
-        $response
-            ->expects($this->once())
-            ->method('setHeaders')
-            ->with($cachedHeaders);
-        $response
-            ->expects($this->once())
-            ->method('setContent')
-            ->with($cachedContent);
-
         $cachedClient = new CachedClient($client, $cache);
-
-        $cachedClient->send($request, $response);
+        $cachedClient->sendRequest($request);
 
         $this->assertSame(0, $cachedClient->getMisses());
         $this->assertSame(1, $cachedClient->getHits());
@@ -108,27 +112,37 @@ class CachedClientTest extends TestCase
 
     private function createMockCache()
     {
-        return $this->getMockBuilder('Doctrine\\Common\\Cache\\Cache')->getMock();
+        return $this->getMockBuilder(CacheItemPoolInterface::class)->getMock();
+    }
+
+    private function createMockCacheItem()
+    {
+        return $this->getMockBuilder(CacheItemInterface::class)->getMock();
     }
 
     private function createMockClient()
     {
-        return $this->getMockBuilder('Buzz\\Client\\ClientInterface')->getMock();
+        return $this->getMockBuilder(BuzzClientInterface::class)->getMock();
     }
 
-    private function createMockRequest(array $headers = array())
+    private function createMockRequest()
     {
-        $request = $this->getMockBuilder('Buzz\\Message\\RequestInterface')->getMock();
-        $request
-            ->expects($this->once())
-            ->method('getHeaders')
-            ->will($this->returnValue($headers));
+        $request = $this->getMockBuilder(RequestInterface::class)->getMock();
+        // $request
+        //     ->expects($this->once())
+        //     ->method('getHeaders')
+        //     ->will($this->returnValue($headers));
 
         return $request;
     }
 
     private function createMockResponse()
     {
-        return $this->getMockBuilder('Buzz\Message\Response')->getMock();
+        return $this->getMockBuilder(ResponseInterface::class)->getMock();
+    }
+
+    private function createMockStream()
+    {
+        return $this->getMockBuilder(StreamInterface::class)->getMock();
     }
 }
