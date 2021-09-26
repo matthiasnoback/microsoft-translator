@@ -124,16 +124,5 @@ values with their real values (i.e. client id, client secret and a location for 
 
 [![Build Status](https://secure.travis-ci.org/matthiasnoback/microsoft-translator.png)](http://travis-ci.org/matthiasnoback/microsoft-translator)
 
-## Related projects
-
-There is a [MicrosoftTranslatorBundle](https://github.com/matthiasnoback/MicrosoftTranslatorBundle) which makes the Microsoft translator available in a Symfony2 project.
-
-There is also a [MicrosoftTranslatorServiceProvider](https://github.com/matthiasnoback/MicrosoftTranslatorServiceProvider) which registers the Microsoft translator and related services to a Silex application.
-
-## Differences with V2 library
- * Removed speak method: Speak API has been removed from the Microsoft Translator Text API on v3.0.
- * Removed getTranslations method: GetTranslations functionality has been removed from the Microsoft Translator Text API on v3.0.
- * Removed Datamarket token compatibility: Azure datamarket is not longer available so this has been removed from v3.x
-
 ## TODO
 * There are some more calls to be implemented, and also some more tests to be added.
