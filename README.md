@@ -22,7 +22,7 @@ Then using the Composer binary:
 
 This library uses the Buzz browser to make calls to the [Microsoft Translator Text API 3.0](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages?tabs=curl).
 
-You need to [obtain a Microsoft Azure Cognitive Services subscription Key](http://docs.microsofttranslator.com/text-translate.html). This can be used to instantiate the ``AzureTokenProvider``:
+You need to [obtain a Microsoft Azure Cognitive Services subscription Key](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account). This can be used to instantiate the ``AzureTokenProvider``:
 
 ```php
 <?php
