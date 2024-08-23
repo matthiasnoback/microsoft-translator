@@ -9,7 +9,7 @@ class DictionaryLookupTest extends TestCase
 {
     public function testValidatesLengthOfText()
     {
-        $text = str_repeat('t', 10001);
+        $text = str_repeat('t', 101);
 
         $this->expectException('\InvalidArgumentException');
 

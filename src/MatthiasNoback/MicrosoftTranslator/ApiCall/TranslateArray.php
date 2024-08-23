@@ -2,11 +2,10 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-use MatthiasNoback\Exception\InvalidResponseException;
-
 class TranslateArray extends Translate
 {
-    const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 2000;
+    const MAXIMUM_LENGTH_OF_TEXT = 50000;
+    const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 1000;
 
     public function __construct($text, $to, $from = null, $category = null, $contentType = self::CONTENT_TYPE_TEXT)
     {
@@ -16,7 +15,7 @@ class TranslateArray extends Translate
                 self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS
             ));
         }
-
+        
         $totalLengthOfTexts = self::calculateTotalLengthOfTexts($text);
         if ($totalLengthOfTexts > self::MAXIMUM_LENGTH_OF_TEXT) {
             throw new \InvalidArgumentException(sprintf(

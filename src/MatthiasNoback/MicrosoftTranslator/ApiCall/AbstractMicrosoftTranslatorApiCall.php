@@ -2,13 +2,9 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-use MatthiasNoback\Exception\InvalidResponseException;
-
 abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
 {
     const HTTP_API_URL = 'https://api.cognitive.microsofttranslator.com/';
-
-    const MAXIMUM_LENGTH_OF_TEXT = 50000;
 
     abstract public function getApiMethodName();
 
@@ -27,7 +23,7 @@ abstract class AbstractMicrosoftTranslatorApiCall implements ApiCallInterface
         $totalLength = 0;
 
         array_walk($texts, function($text) use (&$totalLength) {
-            $totalLength += strlen($text);
+            $totalLength += mb_strlen($text);
         });
 
         return $totalLength;

@@ -2,16 +2,16 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-use MatthiasNoback\Exception\InvalidResponseException;
-
 class BreakSentences extends AbstractMicrosoftTranslatorApiCall
 {
+    const MAXIMUM_LENGTH_OF_TEXT = 50000;
+
     private $text;
     private $language;
 
     public function __construct($text, $language)
     {
-        if (strlen($text) > self::MAXIMUM_LENGTH_OF_TEXT) {
+        if (mb_strlen($text) > self::MAXIMUM_LENGTH_OF_TEXT) {
             throw new \InvalidArgumentException(sprintf('Text may not be longer than %d characters', self::MAXIMUM_LENGTH_OF_TEXT));
         }
 

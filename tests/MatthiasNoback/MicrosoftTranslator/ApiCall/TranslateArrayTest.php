@@ -32,10 +32,9 @@ class TranslateArrayTest extends TestCase
         ), $apiCall->getQueryParameters());
     }
 
-    public function testValidatesNumberOfOfTexts()
+    public function testValidatesNumberOfTexts()
     {
-        $texts = range(1, 2001);
-
+        $texts = range(1, 1001);
         $this->expectException('\InvalidArgumentException');
 
         new ApiCall\TranslateArray($texts, 'nl');
@@ -44,7 +43,7 @@ class TranslateArrayTest extends TestCase
     public function testValidatesTotalLengthOfTexts()
     {
         $texts = array();
-        for ($i = 0; $i <= 10; $i++) {
+        for ($i = 0; $i <= 50; $i++) {
             $texts[] = str_repeat('t', 1000);
         }
 

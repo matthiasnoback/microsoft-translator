@@ -159,6 +159,25 @@ class MicrosoftTranslator
     }
 
     /**
+     * Look up a text in dictionary
+     *
+     * @param string $text
+     * @param string $to
+     * @param string|null $from
+     * @return string
+     */
+    public function dictionaryLookupArray(
+        $texts,
+        $to,
+        $from = null
+    )
+    {
+        $apiCall = new ApiCall\DictionaryLookupArray($texts, $to, $from);
+
+        return $this->call($apiCall);
+    }
+
+    /**
      * @param \MatthiasNoback\MicrosoftTranslator\ApiCall\ApiCallInterface $apiCall
      * @return mixed
      */
@@ -172,7 +191,7 @@ class MicrosoftTranslator
             $headers = array(
                 'Authorization' =>  'Bearer '.$this->getAccessToken(),
                 'Content-Type' =>  'application/json',
-                'Content-Length' =>  mb_strlen(json_encode($content))
+                'Content-Length' =>  strlen(json_encode($content))
             );
         }
         $headers = array_unique(array_merge($headers, $apiCall->getRequestHeaders()));
@@ -183,7 +202,7 @@ class MicrosoftTranslator
             throw new RequestFailedException(sprintf(
                 'Request failed: %s',
                 $previous->getMessage()
-            ), null, $previous);
+            ), 0, $previous);
         }
 
         if ($response->getStatusCode() !== 200) {

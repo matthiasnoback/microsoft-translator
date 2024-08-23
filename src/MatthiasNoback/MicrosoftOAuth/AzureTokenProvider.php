@@ -80,7 +80,7 @@ class AzureTokenProvider implements AccessTokenProviderInterface
             throw new RequestFailedException(sprintf(
                 'Request failed: %s',
                 $previous->getMessage()
-            ), null, $previous);
+            ), 0, $previous);
         }
 
         if ($response->getStatusCode() !== 200) {

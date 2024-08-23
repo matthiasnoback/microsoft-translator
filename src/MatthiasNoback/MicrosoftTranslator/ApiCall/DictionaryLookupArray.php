@@ -2,13 +2,19 @@
 
 namespace MatthiasNoback\MicrosoftTranslator\ApiCall;
 
-class DetectArray extends AbstractMicrosoftTranslatorApiCall
+class DictionaryLookupArray extends AbstractMicrosoftTranslatorApiCall
 {
-    const MAXIMUM_LENGTH_OF_TEXT = 50000;
-    const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 100;
-    private $texts;
+    const MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS = 10;
+    const MAXIMUM_LENGTH_OF_TEXT = 100;
 
-    public function __construct(array $texts)
+    const CONTENT_TYPE_TEXT = 'plain';
+    const CONTENT_TYPE_HTML = 'html';
+    
+    private $texts;
+    protected $to;
+    protected $from;
+
+    public function __construct(array $texts, $to, $from = null)
     {
         if (count($texts) > self::MAXIMUM_NUMBER_OF_ARRAY_ELEMENTS) {
             throw new \InvalidArgumentException(sprintf(
@@ -26,11 +32,14 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
         }
 
         $this->texts = $texts;
+        $this->to = $to;
+        $this->from = $from;
     }
+
 
     public function getApiMethodName()
     {
-        return 'detect';
+        return 'dictionary/lookup';
     }
 
     public function getHttpMethod()
@@ -50,7 +59,10 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
 
     public function getQueryParameters()
     {
-        return [];
+        return array(
+            'from'        => $this->from,
+            'to'          => $this->to,
+        );
     }
 
     public function parseResponse($response)
@@ -58,8 +70,9 @@ class DetectArray extends AbstractMicrosoftTranslatorApiCall
       $result = [];
       $texts = json_decode($response, true);
       foreach ($texts as $text) {
-        $result[] = $text['language'];
+        $result[] = $text['translations'];
       }
+
       return $result;
     }
 }

@@ -35,4 +35,15 @@ class DetectTest extends TestCase
 
         $this->assertSame('en', $apiCall->parseResponse($response));
     }
+
+    public function testValidatesLengthOfText()
+    {
+        $text = str_repeat('t', 50001);
+
+        $this->expectException('\InvalidArgumentException');
+
+        new ApiCall\Detect($text, 'nl');
+    }
+
+
 }

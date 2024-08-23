@@ -9,7 +9,7 @@ class TranslateTest extends TestCase
 {
     public function testValidatesLengthOfText()
     {
-        $text = str_repeat('t', 10001);
+        $text = str_repeat('t', 50001);
 
         $this->expectException('\InvalidArgumentException');
 

@@ -76,7 +76,7 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
         $this->assertSame(array(
             'Dit is een test',
             'Mijn naam is Matthias.',
-            'Je bent naïef.',
+            'Je bent naïef!',
         ), $translatedTexts);
     }
 
@@ -150,6 +150,23 @@ class MicrosoftAzureTranslatorFunctionalTest extends TestCase
         $this->assertSame('volar', $translated[0]['displayTarget']);
         $this->assertSame('VERB', $translated[0]['posTag']);
         $this->assertGreaterThanOrEqual(2, $translated[0]['backTranslations']);
+    }
+
+    public function testDictionaryLookupArray()
+    {
+
+        $translated = $this->translator->dictionaryLookupArray(['fly', 'dragonfly'], 'es', 'en');
+
+        $this->assertGreaterThanOrEqual(2, $translated);
+        $this->assertSame('volar', $translated[0][0]['normalizedTarget']);
+        $this->assertSame('volar', $translated[0][0]['displayTarget']);
+        $this->assertSame('VERB', $translated[0][0]['posTag']);
+        $this->assertGreaterThanOrEqual(2, $translated[0][0]['backTranslations']);
+
+        $this->assertSame('libélula', $translated[1][0]['normalizedTarget']);
+        $this->assertSame('libélula', $translated[1][0]['displayTarget']);
+        $this->assertSame('NOUN', $translated[1][0]['posTag']);
+        $this->assertGreaterThanOrEqual(2, $translated[1][0]['backTranslations']);
     }
 
 

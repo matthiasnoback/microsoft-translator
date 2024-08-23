@@ -4,6 +4,7 @@ namespace MatthiasNoback\Tests\MicrosoftTranslator\ApiCall;
 
 use PHPUnit\Framework\TestCase;
 use MatthiasNoback\MicrosoftTranslator\ApiCall;
+use MatthiasNoback\MicrosoftTranslator\ApiCall\ApiCallInterface;
 
 class DetectArrayTest extends TestCase
 {
@@ -39,5 +40,25 @@ class DetectArrayTest extends TestCase
         $apiCall = new ApiCall\DetectArray($texts);
 
         $this->assertSame(array('en', 'nl'), $apiCall->parseResponse($response));
+    }
+
+    public function testValidatesNumberOfTexts()
+    {
+        $texts = range(1, 101);
+        $this->expectException('\InvalidArgumentException');
+
+        new ApiCall\DetectArray($texts, 'nl');
+    }
+
+    public function testValidatesTotalLengthOfTexts()
+    {
+        $texts = array();
+        for ($i = 0; $i <= 50; $i++) {
+            $texts[] = str_repeat('t', 1000);
+        }
+
+        $this->expectException('\InvalidArgumentException');
+
+        new ApiCall\DetectArray($texts, 'nl');
     }
 }
